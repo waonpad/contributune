@@ -8,15 +8,18 @@ import { version } from "./package.json";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const manifest = defineManifest(async (_env) => ({
   manifest_version: 3,
-  name: "Browser Extension",
-  description: "Browser Extension Description",
+  name: "Contributune",
+  description: "GitHubの草を音声波形にして音楽を再生するChrome拡張機能",
   version,
   background: {
     service_worker: "service-worker/index.ts",
   },
   content_scripts: [
     {
-      matches: ["http://*/*", "https://*/*", "file:///*"],
+      // ここではglobは使えない
+      matches: ["https://github.com/*"],
+      // TODO: ここでユーザープロフィールのみに絞り込みたかったが、なぜかできない
+      // include_globs: [],
       js: ["content/index.tsx"],
     },
   ],
