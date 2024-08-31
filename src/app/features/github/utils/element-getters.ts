@@ -1,63 +1,63 @@
 export const getGitHubYearlyContributionsContainer = {
   selectors: ".js-yearly-contributions",
-  node: document,
+  node: () => document,
   exec: () =>
-    getGitHubYearlyContributionsContainer.node.querySelector<HTMLDivElement>(
-      getGitHubYearlyContributionsContainer.selectors,
-    ),
+    getGitHubYearlyContributionsContainer
+      .node()
+      .querySelector<HTMLDivElement>(getGitHubYearlyContributionsContainer.selectors),
 } as const;
 
 export const getGitHubYearlyContributionsMainContainer = {
   selectors: ".js-yearly-contributions > div",
-  node: document,
+  node: () => document,
   exec: () =>
-    getGitHubYearlyContributionsMainContainer.node.querySelector<HTMLDivElement>(
-      getGitHubYearlyContributionsMainContainer.selectors,
-    ),
+    getGitHubYearlyContributionsMainContainer
+      .node()
+      .querySelector<HTMLDivElement>(getGitHubYearlyContributionsMainContainer.selectors),
 } as const;
 
 export const getGitHubYearlyContributionsGraphContainer = {
   selectors: ".js-yearly-contributions > div > .graph-before-activity-overview",
-  node: document,
+  node: () => document,
   exec: () =>
-    getGitHubYearlyContributionsGraphContainer.node.querySelector<HTMLDivElement>(
-      getGitHubYearlyContributionsGraphContainer.selectors,
-    ),
+    getGitHubYearlyContributionsGraphContainer
+      .node()
+      .querySelector<HTMLDivElement>(getGitHubYearlyContributionsGraphContainer.selectors),
 } as const;
 
 export const getGitHubYearlyContributionsGraphDataContainer = {
   selectors: ".js-yearly-contributions > div > .graph-before-activity-overview > div[data-graph-url]",
-  node: document,
+  node: () => document,
   exec: () =>
-    getGitHubYearlyContributionsGraphDataContainer.node.querySelector<HTMLDivElement>(
-      getGitHubYearlyContributionsGraphDataContainer.selectors,
-    ),
+    getGitHubYearlyContributionsGraphDataContainer
+      .node()
+      .querySelector<HTMLDivElement>(getGitHubYearlyContributionsGraphDataContainer.selectors),
 } as const;
 
 export const getGitHubYearlyContributionsGraphDataScrollableContainer = {
   selectors: ".js-yearly-contributions > div > .graph-before-activity-overview > div[data-graph-url] > div",
-  node: document,
+  node: () => document,
   exec: () =>
-    getGitHubYearlyContributionsGraphDataScrollableContainer.node.querySelector<HTMLDivElement>(
-      getGitHubYearlyContributionsGraphDataScrollableContainer.selectors,
-    ),
+    getGitHubYearlyContributionsGraphDataScrollableContainer
+      .node()
+      .querySelector<HTMLDivElement>(getGitHubYearlyContributionsGraphDataScrollableContainer.selectors),
 } as const;
 
 export const getGitHubYearlyContributionsGraphDataTable = {
   selectors: ".js-yearly-contributions > div > .graph-before-activity-overview > div[data-graph-url] > div > table",
-  node: document,
+  node: () => document,
   exec: () =>
-    getGitHubYearlyContributionsGraphDataTable.node.querySelector<HTMLTableElement>(
-      getGitHubYearlyContributionsGraphDataTable.selectors,
-    ),
+    getGitHubYearlyContributionsGraphDataTable
+      .node()
+      .querySelector<HTMLTableElement>(getGitHubYearlyContributionsGraphDataTable.selectors),
 } as const;
 
 export const getGitHubYearlyContributionsGraphDataTableBody = {
   selectors:
     ".js-yearly-contributions > div > .graph-before-activity-overview > div[data-graph-url] > div > table > tbody",
-  node: document,
+  node: () => document,
   exec: () =>
-    getGitHubYearlyContributionsGraphDataTableBody.node.querySelector<HTMLTableSectionElement>(
-      getGitHubYearlyContributionsGraphDataTableBody.selectors,
-    ),
+    getGitHubYearlyContributionsGraphDataTableBody
+      .node()
+      .querySelector<HTMLTableSectionElement>(getGitHubYearlyContributionsGraphDataTableBody.selectors),
 } as const;

@@ -75,7 +75,7 @@ const AudioPlayerRnederer = () => {
   useMemo(async () => {
     const element = await waitQuerySelector<HTMLDivElement>(
       getGitHubYearlyContributionsContainer.selectors,
-      getGitHubYearlyContributionsContainer.node,
+      getGitHubYearlyContributionsContainer.node(),
     );
 
     setContainer(element);
