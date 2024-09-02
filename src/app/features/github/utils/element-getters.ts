@@ -61,3 +61,14 @@ export const getGitHubYearlyContributionsGraphDataTableBody = {
       .node()
       .querySelector<HTMLTableSectionElement>(getGitHubYearlyContributionsGraphDataTableBody.selectors),
 } as const;
+
+export type GitHubYearlyContributionsGraphLegendLevel = 0 | 1 | 2 | 3 | 4;
+
+export const getGitHubYearlyContributionsGraphLegend = {
+  selectors: (level: GitHubYearlyContributionsGraphLegendLevel) => `#contribution-graph-legend-level-${level}`,
+  node: () => document,
+  exec: (level: GitHubYearlyContributionsGraphLegendLevel) =>
+    getGitHubYearlyContributionsGraphLegend
+      .node()
+      .querySelector<HTMLDivElement>(getGitHubYearlyContributionsGraphLegend.selectors(level)),
+} as const;

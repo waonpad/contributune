@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import {
   getGitHubYearlyContributionsContainer,
   getGitHubYearlyContributionsGraphDataTableBody,
+  getGitHubYearlyContributionsGraphLegend,
 } from "../../app/features/github/utils/element-getters";
 import { createRoundRectPath } from "../../app/utils/canvas";
 import { waitQuerySelector } from "../../app/utils/wait-guery-selector";
@@ -41,6 +42,9 @@ export const AudioPlayer = () => {
 
   const canvasContainerRef = useRef<HTMLTableCellElement | null>(null);
 
+  const colorLevel0Ref = useRef<HTMLDivElement | null>(null);
+  const colorLevel4Ref = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     // AudioContextを作成
     audioContext.current = new AudioContext();
@@ -67,33 +71,49 @@ export const AudioPlayer = () => {
     };
   }, []);
 
-  useMemo(async () => {
-    const element = await waitQuerySelector<HTMLTableSectionElement>(
-      getGitHubYearlyContributionsGraphDataTableBody.selectors,
-      getGitHubYearlyContributionsGraphDataTableBody.node(),
-    );
+  useMemo(() => {
+    (async () => {
+      const tBody = await waitQuerySelector<HTMLTableSectionElement>(
+        getGitHubYearlyContributionsGraphDataTableBody.selectors,
+        getGitHubYearlyContributionsGraphDataTableBody.node(),
+      );
 
-    if (!element) return;
+      if (!tBody) return;
 
-    tBodyRef.current = element;
+      tBodyRef.current = tBody;
+
+      const tds = tBody.querySelectorAll("td");
+
+      canvasContainerRef.current = tds[1];
+    })();
+
+    (async () => {
+      const colorLevel0 = await waitQuerySelector<HTMLDivElement>(
+        getGitHubYearlyContributionsGraphLegend.selectors(0),
+        getGitHubYearlyContributionsGraphLegend.node(),
+      );
+
+      if (!colorLevel0) return;
+
+      colorLevel0Ref.current = colorLevel0;
+    })();
+
+    (async () => {
+      const colorLevel4 = await waitQuerySelector<HTMLDivElement>(
+        getGitHubYearlyContributionsGraphLegend.selectors(4),
+        getGitHubYearlyContributionsGraphLegend.node(),
+      );
+
+      if (!colorLevel4) return;
+
+      colorLevel4Ref.current = colorLevel4;
+    })();
   }, []);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useMemo(async () => {
-    if (!tBodyRef.current) return;
-
-    // 2つ目のtdの要素を取得
-    const tds = tBodyRef.current.querySelectorAll("td");
-
-    // relativeにする
-    // TODO: ビジュアライザーを非表示に戻したらこの変更も元に戻す
-    tds[1].style.position = "relative";
-
-    canvasContainerRef.current = tds[1];
-  }, [tBodyRef.current]);
 
   const renderFrame = () => {
     if (!canvasRef.current || !audioAnalyser.current) return;
+
+    if (!colorLevel0Ref.current || !colorLevel4Ref.current) return;
 
     // アナライザーノードのデータを取得
     const bufferLength = audioAnalyser.current.frequencyBinCount;
@@ -115,8 +135,7 @@ export const AudioPlayer = () => {
 
     const canvasHeight = canvasRef.current.height;
 
-    // TODO: 色は右下のLess Moreと書いてあるところから取れる
-    canvasCtx.fillStyle = "#161b22";
+    canvasCtx.fillStyle = getComputedStyle(colorLevel0Ref.current).backgroundColor;
 
     // キャンバス全体に10x10の角丸四角形を3pxずつスペースをあけて描画
     for (let y = 0; y < canvasHeight; y += VISUALIZER_SETTINGS.CELL_HEIGHT + VISUALIZER_SETTINGS.CELL_SPACING) {
@@ -145,8 +164,7 @@ export const AudioPlayer = () => {
 
       const x = i * (VISUALIZER_SETTINGS.CELL_WIDTH + VISUALIZER_SETTINGS.CELL_SPACING);
 
-      // TODO: 色は右下のLess Moreと書いてあるところから取れる
-      canvasCtx.fillStyle = "#39d353";
+      canvasCtx.fillStyle = getComputedStyle(colorLevel4Ref.current).backgroundColor;
 
       let bH = 0;
 
@@ -239,6 +257,11 @@ export const AudioPlayer = () => {
         for (let j = 1; j < tds.length; j++) {
           // これ
           tds[j].style.visibility = "hidden";
+
+          if (i === 0 && j === 1) {
+            // これ
+            tds[j].style.position = "absolute";
+          }
         }
       }
 
