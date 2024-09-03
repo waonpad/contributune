@@ -22,19 +22,6 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
-  "css.validate": false,
-  "scss.validate": false,
-  "[css]": {
-    "editor.codeActionsOnSave": {
-      "source.fixAll.stylelint": "explicit"
-    }
-  },
-  "[scss]": {
-    "editor.codeActionsOnSave": {
-      "source.fixAll.stylelint": "explicit"
-    }
-  },
-  "stylelint.validate": ["css", "scss"],
   "[php]": {
     "editor.tabSize": 4
   },
@@ -45,5 +32,5 @@
     "editor.formatOnSave": false,
     "files.trimTrailingWhitespace": false
   },
-  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.enabled": true
 }
