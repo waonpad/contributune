@@ -169,15 +169,16 @@ export const AudioPlayer = () => {
 
       canvasCtx.fillStyle = getComputedStyle(colorLevel4Ref.current).backgroundColor;
 
-      let bH = 0;
+      let processedBarHeight = 0;
 
       // barHeight以下の間、縦に3pxずつスペースをあけて下から上に描画
-      while (bH < barHeight) {
-        const _ = barHeight - bH;
+      while (processedBarHeight < barHeight) {
+        const currentBlockHeight =
+          barHeight - processedBarHeight < VISUALIZER_SETTINGS.CELL_HEIGHT
+            ? barHeight - processedBarHeight
+            : VISUALIZER_SETTINGS.CELL_HEIGHT;
 
-        const currentBlockHeight = _ < VISUALIZER_SETTINGS.CELL_HEIGHT ? _ : VISUALIZER_SETTINGS.CELL_HEIGHT;
-
-        const currentY = canvasHeight - bH - currentBlockHeight;
+        const currentY = canvasHeight - processedBarHeight - currentBlockHeight;
 
         const currentRadius =
           currentBlockHeight < VISUALIZER_SETTINGS.CELL_RADIUS
@@ -195,7 +196,7 @@ export const AudioPlayer = () => {
 
         canvasCtx.fill();
 
-        bH += currentBlockHeight + VISUALIZER_SETTINGS.CELL_SPACING;
+        processedBarHeight += currentBlockHeight + VISUALIZER_SETTINGS.CELL_SPACING;
       }
     }
   };
