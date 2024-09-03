@@ -18,8 +18,6 @@ const manifest = defineManifest(async (_env) => ({
     {
       // ここではglobは使えない
       matches: ["https://github.com/*"],
-      // TODO: ここでユーザープロフィールのみに絞り込みたかったが、なぜかできない
-      // include_globs: [],
       js: ["content/index.tsx"],
     },
   ],
