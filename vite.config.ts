@@ -28,5 +28,12 @@ export default defineConfig({
       },
     },
   },
-  plugins: [react(), crx({ manifest })],
+  plugins: [
+    react({
+      babel: {
+        plugins: ["styled-jsx/babel"],
+      },
+    }),
+    crx({ manifest }),
+  ],
 });

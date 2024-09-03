@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { AudioPlayerRnederer } from "./components/audio-player";
+import { OverrideStyles } from "./styles";
 
 export const Content = () => {
   const [githubPageType, setGithubPageType] = useState<string | null>(null);
@@ -63,6 +64,7 @@ export const Content = () => {
 
   return (
     <>
+      <OverrideStyles />
       <AudioPlayerRnederer />
     </>
   );
