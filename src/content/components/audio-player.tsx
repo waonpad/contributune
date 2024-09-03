@@ -2,6 +2,7 @@ import { type ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   getGitHubYearlyContributionsContainer,
+  getGitHubYearlyContributionsGraphDataContainer,
   getGitHubYearlyContributionsGraphDataTableBody,
   getGitHubYearlyContributionsGraphLegend,
 } from "../../app/features/github/utils/element-getters";
@@ -53,6 +54,8 @@ export const AudioPlayer = () => {
 
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
+  const audioControlsContainerRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     // AudioContextを作成
     audioContext.current = new AudioContext();
@@ -93,6 +96,17 @@ export const AudioPlayer = () => {
       const tds = tBody.querySelectorAll("td");
 
       canvasContainerRef.current = tds[1];
+    })();
+
+    (async () => {
+      const audioControlsContainer = await waitQuerySelector<HTMLDivElement>(
+        getGitHubYearlyContributionsGraphDataContainer.selectors,
+        getGitHubYearlyContributionsGraphDataContainer.node(),
+      );
+
+      if (!audioControlsContainer) return;
+
+      audioControlsContainerRef.current = audioControlsContainer;
     })();
 
     (async () => {
@@ -309,14 +323,33 @@ export const AudioPlayer = () => {
   };
 
   return (
-    <div>
-      <input type="file" accept="audio/mpeg" onChange={handleFileChange} />
-      <button onClick={playAudio} disabled={!audioBuffer} type="button">
-        再生
-      </button>
-      <button onClick={stopAudio} disabled={!audioBuffer} type="button">
-        停止
-      </button>
+    <>
+      {(() => {
+        if (!audioControlsContainerRef.current) return null;
+
+        return createPortal(
+          <div
+            style={{
+              fontSize: 12,
+              paddingTop: 4,
+              paddingBottom: 4,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <input type="file" accept="audio/mpeg" onChange={handleFileChange} />
+            <button onClick={playAudio} disabled={!audioBuffer} type="button">
+              再生
+            </button>
+            <button onClick={stopAudio} disabled={!audioBuffer} type="button">
+              停止
+            </button>
+          </div>,
+          audioControlsContainerRef.current,
+        );
+      })()}
       {(() => {
         if (!canvasContainerRef.current || !tBodyRef.current || !isAudioPlaying) return null;
 
@@ -335,7 +368,7 @@ export const AudioPlayer = () => {
           canvasContainerRef.current,
         );
       })()}
-    </div>
+    </>
   );
 };
 
