@@ -46,6 +46,8 @@ export const AudioPlayer = () => {
   const colorLevel0Ref = useRef<HTMLDivElement | null>(null);
   const colorLevel4Ref = useRef<HTMLDivElement | null>(null);
 
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+
   useEffect(() => {
     // AudioContextを作成
     audioContext.current = new AudioContext();
@@ -268,6 +270,9 @@ export const AudioPlayer = () => {
       // オーディオの再生を開始
       source.start(0);
 
+      // 再生中のフラグを立てる
+      setIsAudioPlaying(true);
+
       // キャンバスの描画を無限ループで行う処理を開始
       animationId.current = requestAnimationFrame(function loop() {
         renderFrame();
@@ -300,6 +305,9 @@ export const AudioPlayer = () => {
     for (const elm of document.querySelectorAll("[data-contributune-audio-playing-style-override-position-relative]")) {
       elm.removeAttribute("data-contributune-audio-playing-style-override-position-relative");
     }
+
+    // 再生中のフラグを解除
+    setIsAudioPlaying(false);
   };
 
   return (
@@ -312,10 +320,7 @@ export const AudioPlayer = () => {
         停止
       </button>
       {(() => {
-        if (!canvasContainerRef.current || !tBodyRef.current) return null;
-
-        // TODO: 再生状態で表示を切り替えたいが、拡張機能のHMRがおかしいのか謎の挙動になる
-        // キャンバスをクリアーすれば一応見れなくなるので一旦それで対応
+        if (!canvasContainerRef.current || !tBodyRef.current || !isAudioPlaying) return null;
 
         return createPortal(
           <canvas
