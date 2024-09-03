@@ -7,6 +7,7 @@ import {
 } from "../../app/features/github/utils/element-getters";
 import { createRoundRectPath } from "../../app/utils/canvas";
 import { waitQuerySelector } from "../../app/utils/wait-guery-selector";
+import "./override.css";
 
 type AnalyserNodeFFTSize = 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096 | 8192 | 16384 | 32768;
 
@@ -248,7 +249,6 @@ export const AudioPlayer = () => {
       audioSource.current = source;
 
       // テーブルのセルを非表示にする
-      // TODO: ビジュアライザーを非表示に戻したらこの変更も元に戻す
       const trs = tBodyRef.current.querySelectorAll("tr");
 
       for (let i = 0; i < trs.length; i++) {
@@ -256,11 +256,11 @@ export const AudioPlayer = () => {
 
         for (let j = 1; j < tds.length; j++) {
           // これ
-          tds[j].style.visibility = "hidden";
+          tds[j].setAttribute("data-contributune-audio-playing-style-override-visibility-hidden", "true");
 
           if (i === 0 && j === 1) {
             // これ
-            tds[j].style.position = "absolute";
+            tds[j].setAttribute("data-contributune-audio-playing-style-override-position-relative", "true");
           }
         }
       }
@@ -287,6 +287,19 @@ export const AudioPlayer = () => {
       cancelAnimationFrame(animationId.current);
       animationId.current = null;
     }
+
+    // キャンバスをクリア
+    canvasRef.current?.getContext("2d")?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+
+    // スタイルのオーバーライドを解除
+    for (const elm of document.querySelectorAll("[data-contributune-audio-playing-style-override-visibility-hidden]")) {
+      elm.removeAttribute("data-contributune-audio-playing-style-override-visibility-hidden");
+    }
+
+    // スタイルのオーバーライドを解除
+    for (const elm of document.querySelectorAll("[data-contributune-audio-playing-style-override-position-relative]")) {
+      elm.removeAttribute("data-contributune-audio-playing-style-override-position-relative");
+    }
   };
 
   return (
@@ -302,6 +315,7 @@ export const AudioPlayer = () => {
         if (!canvasContainerRef.current || !tBodyRef.current) return null;
 
         // TODO: 再生状態で表示を切り替えたいが、拡張機能のHMRがおかしいのか謎の挙動になる
+        // キャンバスをクリアーすれば一応見れなくなるので一旦それで対応
 
         return createPortal(
           <canvas
