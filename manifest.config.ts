@@ -52,7 +52,7 @@ const manifest = defineManifest(async (_env) => ({
     "48": "images/extension-48.png",
     "128": "images/extension-128.png",
   },
-  permissions: ["storage", "tabs"],
+  permissions: ["storage", "tabs", "webNavigation"],
 }));
 
 export default manifest;

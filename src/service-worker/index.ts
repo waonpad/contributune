@@ -17,3 +17,13 @@ browser.runtime.onInstalled.addListener(async (details) => {
     await browser.tabs.create({ url });
   }
 });
+
+browser.webNavigation.onHistoryStateUpdated.addListener(
+  (details) => {
+    browser.tabs.sendMessage(details.tabId, {
+      messageType: "URL_UPDATED",
+      ...details,
+    });
+  },
+  { url: [{ hostEquals: "github.com" }] },
+);
