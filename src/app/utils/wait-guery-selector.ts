@@ -19,7 +19,7 @@ export const waitQuerySelectorAll = async <T extends Element>(
 export const waitQuerySelector = async <T extends Element>(
   selector: string,
   node: Document | Element = document,
-): Promise<T | null> => {
+): Promise<T> => {
   let element: T | null = null;
 
   while (!element) {
@@ -31,5 +31,5 @@ export const waitQuerySelector = async <T extends Element>(
     });
   }
 
-  return element;
+  return element as T;
 };

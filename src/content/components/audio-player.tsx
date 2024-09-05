@@ -1,4 +1,4 @@
-import { type ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
+import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   getGitHubYearlyContributionsContainer,
@@ -60,6 +60,46 @@ export const AudioPlayer = () => {
     // AudioContextを作成
     audioContext.current = new AudioContext();
 
+    (async () => {
+      const tBody = await waitQuerySelector<HTMLTableSectionElement>(
+        getGitHubYearlyContributionsGraphDataTableBody.selectors,
+        getGitHubYearlyContributionsGraphDataTableBody.node(),
+      );
+
+      tBodyRef.current = tBody;
+
+      const tds = tBody.querySelectorAll("td");
+
+      canvasContainerRef.current = tds[1];
+    })();
+
+    (async () => {
+      const audioControlsContainer = await waitQuerySelector<HTMLDivElement>(
+        getGitHubYearlyContributionsGraphDataContainer.selectors,
+        getGitHubYearlyContributionsGraphDataContainer.node(),
+      );
+
+      audioControlsContainerRef.current = audioControlsContainer;
+    })();
+
+    (async () => {
+      const colorLevel0 = await waitQuerySelector<HTMLDivElement>(
+        getGitHubYearlyContributionsGraphLegend.selectors(0),
+        getGitHubYearlyContributionsGraphLegend.node(),
+      );
+
+      colorLevel0Ref.current = colorLevel0;
+    })();
+
+    (async () => {
+      const colorLevel4 = await waitQuerySelector<HTMLDivElement>(
+        getGitHubYearlyContributionsGraphLegend.selectors(4),
+        getGitHubYearlyContributionsGraphLegend.node(),
+      );
+
+      colorLevel4Ref.current = colorLevel4;
+    })();
+
     // アンマウント時の処理
     return () => {
       (async () => {
@@ -80,56 +120,6 @@ export const AudioPlayer = () => {
         }
       })();
     };
-  }, []);
-
-  useMemo(() => {
-    (async () => {
-      const tBody = await waitQuerySelector<HTMLTableSectionElement>(
-        getGitHubYearlyContributionsGraphDataTableBody.selectors,
-        getGitHubYearlyContributionsGraphDataTableBody.node(),
-      );
-
-      if (!tBody) return;
-
-      tBodyRef.current = tBody;
-
-      const tds = tBody.querySelectorAll("td");
-
-      canvasContainerRef.current = tds[1];
-    })();
-
-    (async () => {
-      const audioControlsContainer = await waitQuerySelector<HTMLDivElement>(
-        getGitHubYearlyContributionsGraphDataContainer.selectors,
-        getGitHubYearlyContributionsGraphDataContainer.node(),
-      );
-
-      if (!audioControlsContainer) return;
-
-      audioControlsContainerRef.current = audioControlsContainer;
-    })();
-
-    (async () => {
-      const colorLevel0 = await waitQuerySelector<HTMLDivElement>(
-        getGitHubYearlyContributionsGraphLegend.selectors(0),
-        getGitHubYearlyContributionsGraphLegend.node(),
-      );
-
-      if (!colorLevel0) return;
-
-      colorLevel0Ref.current = colorLevel0;
-    })();
-
-    (async () => {
-      const colorLevel4 = await waitQuerySelector<HTMLDivElement>(
-        getGitHubYearlyContributionsGraphLegend.selectors(4),
-        getGitHubYearlyContributionsGraphLegend.node(),
-      );
-
-      if (!colorLevel4) return;
-
-      colorLevel4Ref.current = colorLevel4;
-    })();
   }, []);
 
   const renderFrame = () => {
@@ -324,10 +314,8 @@ export const AudioPlayer = () => {
 
   return (
     <>
-      {(() => {
-        if (!audioControlsContainerRef.current) return null;
-
-        return createPortal(
+      {audioControlsContainerRef.current &&
+        createPortal(
           <div
             style={{
               fontSize: 12,
@@ -348,12 +336,11 @@ export const AudioPlayer = () => {
             </button>
           </div>,
           audioControlsContainerRef.current,
-        );
-      })()}
-      {(() => {
-        if (!canvasContainerRef.current || !tBodyRef.current || !isAudioPlaying) return null;
-
-        return createPortal(
+        )}
+      {canvasContainerRef.current &&
+        tBodyRef.current &&
+        isAudioPlaying &&
+        createPortal(
           <canvas
             ref={canvasRef}
             width={tBodyRef.current.clientWidth - VISUALIZER_SETTINGS.MARGIN_LEFT}
@@ -366,8 +353,7 @@ export const AudioPlayer = () => {
             }}
           />,
           canvasContainerRef.current,
-        );
-      })()}
+        )}
     </>
   );
 };
@@ -375,13 +361,15 @@ export const AudioPlayer = () => {
 export const AudioPlayerRnederer = () => {
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
 
-  useMemo(async () => {
-    const element = await waitQuerySelector<HTMLDivElement>(
-      getGitHubYearlyContributionsContainer.selectors,
-      getGitHubYearlyContributionsContainer.node(),
-    );
+  useEffect(() => {
+    (async () => {
+      const element = await waitQuerySelector<HTMLDivElement>(
+        getGitHubYearlyContributionsContainer.selectors,
+        getGitHubYearlyContributionsContainer.node(),
+      );
 
-    setContainer(element);
+      setContainer(element);
+    })();
   }, []);
 
   if (!container) return null;
