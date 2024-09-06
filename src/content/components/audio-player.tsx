@@ -274,7 +274,6 @@ export const AudioPlayer = () => {
 
   return (
     <>
-      <div>test</div>
       {audioControlsContainerRef.current &&
         createPortal(
           <div
