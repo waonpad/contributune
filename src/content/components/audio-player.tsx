@@ -1,4 +1,4 @@
-import { type ChangeEvent, useEffect, useRef, useState } from "react";
+import { type ChangeEvent, useEffect, useReducer, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   getGitHubYearlyContributionsContainer,
@@ -65,7 +65,7 @@ export const AudioPlayer = () => {
     appearParams: [getGitHubYearlyContributionsGraphLegend.selectors(4)],
   });
 
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [, reRender] = useReducer((s) => s + 1, 0);
 
   useEffect(() => {
     // アンマウント時の処理
@@ -87,9 +87,14 @@ export const AudioPlayer = () => {
   }, []);
 
   const renderFrame = () => {
-    if (!canvasRef.current || !audioAnalyser.current) return;
+    // 処理に必要なリソースが揃っていない場合は処理を終了
+    if (!canvasRef.current || !audioAnalyser.current || !colorLevel0Ref.current || !colorLevel4Ref.current) return;
 
-    if (!colorLevel0Ref.current || !colorLevel4Ref.current) return;
+    // キャンバスのコンテキストを取得
+    const canvasCtx = canvasRef.current.getContext("2d");
+
+    // キャンバスのコンテキストが取得できない場合は処理を終了
+    if (!canvasCtx) return;
 
     // アナライザーノードのデータを取得
     const bufferLength = audioAnalyser.current.frequencyBinCount;
@@ -99,12 +104,6 @@ export const AudioPlayer = () => {
 
     // dataArrayに周波数データを格納
     audioAnalyser.current.getByteFrequencyData(dataArray);
-
-    // キャンバスのコンテキストを取得
-    const canvasCtx = canvasRef.current.getContext("2d");
-
-    // キャンバスのコンテキストが取得できない場合は処理を終了
-    if (!canvasCtx) return;
 
     // キャンバスを初期化
     canvasCtx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
@@ -175,7 +174,8 @@ export const AudioPlayer = () => {
   };
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    if (!event.target.files || !audioContext.current) return;
+    // ファイルが選択されていない場合は処理を終了
+    if (!event.target.files) return;
 
     // 選択されたファイルを取得
     const file = event.target.files[0];
@@ -194,61 +194,60 @@ export const AudioPlayer = () => {
   };
 
   const playAudio = () => {
-    // AudioContextとAudioBufferがある場合のみ再生
-    if (audioContext.current && audioBuffer && tBodyRef.current) {
-      // 既存のソースがあれば停止する
-      if (audioSource.current) audioSource.current.stop();
+    // 処理に必要なリソースが揃っていない場合は処理を終了
+    if (!audioBuffer || !tBodyRef.current) return;
 
-      // AudioBufferSourceNodeを作成
-      const source = audioContext.current.createBufferSource();
+    // 既存のソースがあれば停止する
+    if (audioSource.current) audioSource.current.stop();
 
-      // ソースノードにバッファを設定
-      source.buffer = audioBuffer;
+    // AudioBufferSourceNodeを作成
+    const source = audioContext.current.createBufferSource();
 
-      // アナライザーノードを作成
-      const analyser = audioContext.current.createAnalyser();
+    // ソースノードにバッファを設定
+    source.buffer = audioBuffer;
 
-      analyser.fftSize = ANALYSER_SETTINGS.FFT_SIZE;
+    // アナライザーノードを作成
+    const analyser = audioContext.current.createAnalyser();
 
-      // アナライザーノードを保存しておく
-      audioAnalyser.current = analyser;
+    analyser.fftSize = ANALYSER_SETTINGS.FFT_SIZE;
 
-      // ソースノードにアナライザーノードを接続
-      source.connect(analyser);
+    // アナライザーノードを保存しておく
+    audioAnalyser.current = analyser;
 
-      // アナライザーノードをAudioContextのdestinationに接続
-      analyser.connect(audioContext.current.destination);
+    // ソースノードにアナライザーノードを接続
+    source.connect(analyser);
 
-      // ソースノードを保存しておく
-      audioSource.current = source;
+    // アナライザーノードをAudioContextのdestinationに接続
+    analyser.connect(audioContext.current.destination);
 
-      // テーブルのセルを非表示にする
-      const trs = tBodyRef.current.querySelectorAll("tr");
+    // ソースノードを保存しておく
+    audioSource.current = source;
 
-      for (let i = 0; i < trs.length; i++) {
-        const tds = trs[i].querySelectorAll("td");
+    // テーブルのセルを非表示にする
+    const trs = tBodyRef.current.querySelectorAll("tr");
 
-        for (let j = 1; j < tds.length; j++) {
-          applyOverrideStyle(tds[j], OVERRIDE_VISIBLITY_HIDDEN);
+    for (let i = 0; i < trs.length; i++) {
+      const tds = trs[i].querySelectorAll("td");
 
-          if (i === 0 && j === 1) {
-            applyOverrideStyle(tds[j], OVERRIDE_POSITION_RELATIVE);
-          }
+      for (let j = 1; j < tds.length; j++) {
+        applyOverrideStyle(tds[j], OVERRIDE_VISIBLITY_HIDDEN);
+
+        if (i === 0 && j === 1) {
+          applyOverrideStyle(tds[j], OVERRIDE_POSITION_RELATIVE);
         }
       }
-
-      // オーディオの再生を開始
-      source.start(0);
-
-      // 再生中のフラグを立てる
-      setIsAudioPlaying(true);
-
-      // キャンバスの描画を無限ループで行う処理を開始
-      animationId.current = requestAnimationFrame(function loop() {
-        renderFrame();
-        animationId.current = requestAnimationFrame(loop);
-      });
     }
+
+    // オーディオの再生を開始
+    source.start(0);
+
+    // キャンバスの描画を無限ループで行う処理を開始
+    animationId.current = requestAnimationFrame(function loop() {
+      renderFrame();
+      animationId.current = requestAnimationFrame(loop);
+    });
+
+    reRender();
   };
 
   const stopAudio = () => {
@@ -268,8 +267,7 @@ export const AudioPlayer = () => {
     removeOverrideStyleFromAllElements(OVERRIDE_VISIBLITY_HIDDEN);
     removeOverrideStyleFromAllElements(OVERRIDE_POSITION_RELATIVE);
 
-    // 再生中のフラグを解除
-    setIsAudioPlaying(false);
+    reRender();
   };
 
   return (
@@ -299,7 +297,7 @@ export const AudioPlayer = () => {
         )}
       {canvasContainerRef.current &&
         tBodyRef.current &&
-        isAudioPlaying &&
+        audioContext.current.state === "running" &&
         createPortal(
           <canvas
             ref={canvasRef}
@@ -321,12 +319,6 @@ export const AudioPlayer = () => {
 export const AudioPlayerRenderer = () => {
   const { elementRef: containerRef } = useObserveElementExistence({
     appearParams: [getGitHubYearlyContributionsContainer.selectors],
-    onAppear: (elm) => {
-      console.log("AudioPlayerのコンテナが出現しました", elm);
-    },
-    onDisappear: () => {
-      console.log("AudioPlayerのコンテナが消失しました");
-    },
   });
 
   if (!containerRef.current) return null;
