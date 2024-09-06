@@ -33,6 +33,8 @@ const VISUALIZER_SETTINGS = {
 } as const;
 
 export const AudioPlayer = () => {
+  const [, reRender] = useReducer((s) => s + 1, 0);
+
   const audioContext = useRef<AudioContext>(new AudioContext());
 
   const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null);
@@ -64,8 +66,6 @@ export const AudioPlayer = () => {
   const { elementRef: colorLevel4Ref } = useObserveElementExistence<HTMLDivElement>({
     appearParams: [getGitHubYearlyContributionsGraphLegend.selectors(4)],
   });
-
-  const [, reRender] = useReducer((s) => s + 1, 0);
 
   useEffect(() => {
     // アンマウント時の処理
