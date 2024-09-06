@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { proxyStore } from "../app/proxy-store";
@@ -12,10 +11,10 @@ proxyStore.ready().then(() => {
   root.appendChild(extRoot);
 
   createRoot(extRoot).render(
-    <StrictMode>
-      <Provider store={proxyStore}>
-        <Content />
-      </Provider>
-    </StrictMode>,
+    // <StrictMode>
+    <Provider store={proxyStore}>
+      <Content />
+    </Provider>,
+    // </StrictMode>,
   );
 });

@@ -7,7 +7,7 @@ import {
   getGitHubYearlyContributionsGraphLegend,
 } from "../../app/features/github/utils/element-getters";
 import { createRoundRectPath } from "../../app/utils/canvas";
-import { waitQuerySelector } from "../../app/utils/wait-guery-selector";
+import { useObserveElementExistence } from "../../app/utils/use-observe-element-existense";
 import {
   OVERRIDE_POSITION_RELATIVE,
   OVERRIDE_VISIBLITY_HIDDEN,
@@ -33,7 +33,7 @@ const VISUALIZER_SETTINGS = {
 } as const;
 
 export const AudioPlayer = () => {
-  const audioContext = useRef<AudioContext | null>(null);
+  const audioContext = useRef<AudioContext>(new AudioContext());
 
   const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null);
 
@@ -45,73 +45,37 @@ export const AudioPlayer = () => {
 
   const animationId = useRef<number | null>(null);
 
-  const tBodyRef = useRef<HTMLTableSectionElement | null>(null);
+  const { elementRef: tBodyRef } = useObserveElementExistence<HTMLTableSectionElement>({
+    appearParams: [getGitHubYearlyContributionsGraphDataTableBody.selectors],
+  });
 
-  const canvasContainerRef = useRef<HTMLTableCellElement | null>(null);
+  const { elementRef: canvasContainerRef } = useObserveElementExistence({
+    appearParams: [`${getGitHubYearlyContributionsGraphDataTableBody.selectors} > tr > td:nth-of-type(2)`],
+  });
 
-  const colorLevel0Ref = useRef<HTMLDivElement | null>(null);
-  const colorLevel4Ref = useRef<HTMLDivElement | null>(null);
+  const { elementRef: audioControlsContainerRef } = useObserveElementExistence<HTMLDivElement>({
+    appearParams: [getGitHubYearlyContributionsGraphDataContainer.selectors],
+  });
+
+  const { elementRef: colorLevel0Ref } = useObserveElementExistence<HTMLDivElement>({
+    appearParams: [getGitHubYearlyContributionsGraphLegend.selectors(0)],
+  });
+
+  const { elementRef: colorLevel4Ref } = useObserveElementExistence<HTMLDivElement>({
+    appearParams: [getGitHubYearlyContributionsGraphLegend.selectors(4)],
+  });
 
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
-  const audioControlsContainerRef = useRef<HTMLDivElement | null>(null);
-
   useEffect(() => {
-    // AudioContextを作成
-    audioContext.current = new AudioContext();
-
-    (async () => {
-      const tBody = await waitQuerySelector<HTMLTableSectionElement>(
-        getGitHubYearlyContributionsGraphDataTableBody.selectors,
-        getGitHubYearlyContributionsGraphDataTableBody.node(),
-      );
-
-      tBodyRef.current = tBody;
-
-      const tds = tBody.querySelectorAll("td");
-
-      canvasContainerRef.current = tds[1];
-    })();
-
-    (async () => {
-      const audioControlsContainer = await waitQuerySelector<HTMLDivElement>(
-        getGitHubYearlyContributionsGraphDataContainer.selectors,
-        getGitHubYearlyContributionsGraphDataContainer.node(),
-      );
-
-      audioControlsContainerRef.current = audioControlsContainer;
-    })();
-
-    (async () => {
-      const colorLevel0 = await waitQuerySelector<HTMLDivElement>(
-        getGitHubYearlyContributionsGraphLegend.selectors(0),
-        getGitHubYearlyContributionsGraphLegend.node(),
-      );
-
-      colorLevel0Ref.current = colorLevel0;
-    })();
-
-    (async () => {
-      const colorLevel4 = await waitQuerySelector<HTMLDivElement>(
-        getGitHubYearlyContributionsGraphLegend.selectors(4),
-        getGitHubYearlyContributionsGraphLegend.node(),
-      );
-
-      colorLevel4Ref.current = colorLevel4;
-    })();
-
     // アンマウント時の処理
     return () => {
       (async () => {
         // コンポーネントがアンマウントされたときにAudioContextを終了
-        if (audioContext.current) {
-          await audioContext.current.close();
-        }
+        if (audioContext.current) await audioContext.current.close();
 
         // オーディオの再生を停止
-        if (audioSource.current) {
-          audioSource.current.stop();
-        }
+        if (audioSource.current) audioSource.current.stop();
 
         // キャンバスの描画を停止
         if (animationId.current) {
@@ -233,9 +197,7 @@ export const AudioPlayer = () => {
     // AudioContextとAudioBufferがある場合のみ再生
     if (audioContext.current && audioBuffer && tBodyRef.current) {
       // 既存のソースがあれば停止する
-      if (audioSource.current) {
-        audioSource.current.stop();
-      }
+      if (audioSource.current) audioSource.current.stop();
 
       // AudioBufferSourceNodeを作成
       const source = audioContext.current.createBufferSource();
@@ -291,9 +253,7 @@ export const AudioPlayer = () => {
 
   const stopAudio = () => {
     // オーディオの再生を停止
-    if (audioSource.current) {
-      audioSource.current.stop();
-    }
+    if (audioSource.current) audioSource.current.stop();
 
     // キャンバスの描画を停止
     if (animationId.current) {
@@ -314,6 +274,7 @@ export const AudioPlayer = () => {
 
   return (
     <>
+      <div>test</div>
       {audioControlsContainerRef.current &&
         createPortal(
           <div
@@ -358,21 +319,18 @@ export const AudioPlayer = () => {
   );
 };
 
-export const AudioPlayerRnederer = () => {
-  const [container, setContainer] = useState<HTMLDivElement | null>(null);
+export const AudioPlayerRenderer = () => {
+  const { elementRef: containerRef } = useObserveElementExistence({
+    appearParams: [getGitHubYearlyContributionsContainer.selectors],
+    onAppear: (elm) => {
+      console.log("AudioPlayerのコンテナが出現しました", elm);
+    },
+    onDisappear: () => {
+      console.log("AudioPlayerのコンテナが消失しました");
+    },
+  });
 
-  useEffect(() => {
-    (async () => {
-      const element = await waitQuerySelector<HTMLDivElement>(
-        getGitHubYearlyContributionsContainer.selectors,
-        getGitHubYearlyContributionsContainer.node(),
-      );
+  if (!containerRef.current) return null;
 
-      setContainer(element);
-    })();
-  }, []);
-
-  if (!container) return null;
-
-  return createPortal(<AudioPlayer />, container);
+  return createPortal(<AudioPlayer />, containerRef.current);
 };
