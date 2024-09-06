@@ -65,7 +65,7 @@ export const getGitHubYearlyContributionsGraphDataTableBody = {
 export type GitHubYearlyContributionsGraphLegendLevel = 0 | 1 | 2 | 3 | 4;
 
 export const getGitHubYearlyContributionsGraphLegend = {
-  selectors: (level: GitHubYearlyContributionsGraphLegendLevel) => `#contribution-graph-legend-level-${level}`,
+  selectors: (level: GitHubYearlyContributionsGraphLegendLevel) => `#contribution-graph-legend-level-${level}` as const,
   node: () => document,
   exec: (level: GitHubYearlyContributionsGraphLegendLevel) =>
     getGitHubYearlyContributionsGraphLegend
