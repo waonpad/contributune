@@ -34,23 +34,133 @@ const VISUALIZER_SETTINGS = {
   MARGIN_LEFT: 31,
 } as const;
 
-export const AudioPlayer = () => {
-  const [, reRender] = useReducer((s) => s + 1, 0);
+const fillContributionGraphBase = ({
+  canvas,
+  canvasCtx,
+  baseCellStyle,
+}: {
+  canvas: HTMLCanvasElement;
+  canvasCtx: CanvasRenderingContext2D;
+  baseCellStyle: CanvasRenderingContext2D["fillStyle"];
+}) => {
+  canvasCtx.fillStyle = baseCellStyle;
 
-  const audioContext = useRef<AudioContext | null>(null);
+  // キャンバス全体に10x10の角丸四角形を3pxずつスペースをあけて描画
+  for (let y = 0; y < canvas.height; y += VISUALIZER_SETTINGS.CELL_HEIGHT + VISUALIZER_SETTINGS.CELL_SPACING) {
+    for (let x = 0; x < canvas.width; x += VISUALIZER_SETTINGS.CELL_WIDTH + VISUALIZER_SETTINGS.CELL_SPACING) {
+      createRoundRectPath({
+        ctx: canvasCtx,
+        x,
+        y,
+        w: VISUALIZER_SETTINGS.CELL_WIDTH,
+        h: VISUALIZER_SETTINGS.CELL_HEIGHT,
+        r: VISUALIZER_SETTINGS.CELL_RADIUS,
+      });
 
-  const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null);
+      canvasCtx.fill();
+    }
+  }
+};
 
-  const audioSource = useRef<AudioBufferSourceNode | null>(null);
+const fillVisualizerCanvas = ({
+  canvas,
+  canvasCtx,
+  dataArray,
+  fillStyle,
+}: {
+  canvas: HTMLCanvasElement;
+  canvasCtx: CanvasRenderingContext2D;
+  dataArray: Uint8Array;
+  fillStyle: CanvasRenderingContext2D["fillStyle"];
+}) => {
+  canvasCtx.fillStyle = fillStyle;
 
-  const audioAnalyser = useRef<AnalyserNode | null>(null);
+  for (let i = 0; i < dataArray.length; i++) {
+    // バーの高さはキャンバスの高さに合わせる
+    // これは0〜255の値を0〜キャンバスの高さに変換している
+    const barHeight = (dataArray[i] / 255) * canvas.height;
 
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    let processedBarHeight = 0;
 
-  const animationId = useRef<number | null>(null);
+    // barHeight以下の間、縦に3pxずつスペースをあけて下から上に描画
+    while (processedBarHeight < barHeight) {
+      const currentBlockHeight =
+        barHeight - processedBarHeight < VISUALIZER_SETTINGS.CELL_HEIGHT
+          ? barHeight - processedBarHeight
+          : VISUALIZER_SETTINGS.CELL_HEIGHT;
 
-  const audioFileInputRef = useRef<HTMLInputElement | null>(null);
+      const currentRadius =
+        currentBlockHeight < VISUALIZER_SETTINGS.CELL_RADIUS ? currentBlockHeight / 2 : VISUALIZER_SETTINGS.CELL_RADIUS;
 
+      createRoundRectPath({
+        ctx: canvasCtx,
+        x: i * (VISUALIZER_SETTINGS.CELL_WIDTH + VISUALIZER_SETTINGS.CELL_SPACING),
+        y: canvas.height - processedBarHeight - currentBlockHeight,
+        w: VISUALIZER_SETTINGS.CELL_WIDTH,
+        h: currentBlockHeight,
+        r: currentRadius,
+      });
+
+      canvasCtx.fill();
+
+      processedBarHeight += currentBlockHeight + VISUALIZER_SETTINGS.CELL_SPACING;
+    }
+  }
+};
+
+const applyOverrideStyleToTContributionGraph = ({
+  tBody,
+}: {
+  tBody: HTMLTableSectionElement;
+}) => {
+  // テーブルのセルを非表示にする
+  const trs = tBody.querySelectorAll("tr");
+
+  for (let i = 0; i < trs.length; i++) {
+    const tds = trs[i].querySelectorAll("td");
+
+    for (let j = 1; j < tds.length; j++) {
+      applyOverrideStyle(tds[j], OVERRIDE_VISIBILITY_HIDDEN);
+
+      if (i === 0 && j === 1) {
+        applyOverrideStyle(tds[j], OVERRIDE_POSITION_RELATIVE);
+      }
+    }
+  }
+};
+
+const getFrequencyData = (analyser: AnalyserNode) => {
+  // 周波数データを取得
+  const bufferLength = analyser.frequencyBinCount;
+
+  // 周波数データを格納するための配列を作成
+  const dataArray = new Uint8Array(bufferLength);
+
+  // dataArrayに周波数データを格納
+  analyser.getByteFrequencyData(dataArray);
+
+  return dataArray;
+};
+
+const getAudioBufferFromAudioFile = async ({
+  file,
+  audioContext,
+}: {
+  file: File;
+  audioContext: AudioContext;
+}) => {
+  if (file.type !== "audio/mpeg") {
+    throw new Error("MP3ファイルを選択してください。");
+  }
+
+  // ファイルをArrayBufferとして読み込む
+  const arrayBuffer = await file.arrayBuffer();
+
+  // ArrayBufferをデコードしてAudioBufferを生成
+  return await audioContext.decodeAudioData(arrayBuffer);
+};
+
+const useElms = () => {
   const { elementRef: tBodyRef } = useObserveElementExistence<HTMLTableSectionElement>({
     appearParams: [getGitHubYearlyContributionsGraphDataTableBody.selectors],
   });
@@ -70,6 +180,28 @@ export const AudioPlayer = () => {
   const { elementRef: colorLevel4Ref } = useObserveElementExistence<HTMLDivElement>({
     appearParams: [getGitHubYearlyContributionsGraphLegend.selectors(4)],
   });
+
+  return { tBodyRef, canvasContainerRef, audioControlsContainerRef, colorLevel0Ref, colorLevel4Ref };
+};
+
+export const AudioPlayer = () => {
+  const [, reRender] = useReducer((s) => s + 1, 0);
+
+  const audioContext = useRef<AudioContext | null>(null);
+
+  const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null);
+
+  const audioSource = useRef<AudioBufferSourceNode | null>(null);
+
+  const audioAnalyser = useRef<AnalyserNode | null>(null);
+
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  const animationId = useRef<number | null>(null);
+
+  const audioFileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const { tBodyRef, canvasContainerRef, audioControlsContainerRef, colorLevel0Ref, colorLevel4Ref } = useElms();
 
   useEffect(() => {
     audioContext.current = new AudioContext();
@@ -102,81 +234,26 @@ export const AudioPlayer = () => {
     // キャンバスのコンテキストが取得できない場合は処理を終了
     if (!canvasCtx) return;
 
-    // アナライザーノードのデータを取得
-    const bufferLength = audioAnalyser.current.frequencyBinCount;
-
-    // 周波数データを格納するための配列を作成
-    const dataArray = new Uint8Array(bufferLength);
-
-    // dataArrayに周波数データを格納
-    audioAnalyser.current.getByteFrequencyData(dataArray);
+    // 周波数データを取得
+    const dataArray = getFrequencyData(audioAnalyser.current);
 
     // キャンバスを初期化
     canvasCtx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
-    const canvasHeight = canvasRef.current.height;
+    // キャンバスの背景を塗りつぶす
+    fillContributionGraphBase({
+      canvas: canvasRef.current,
+      canvasCtx,
+      baseCellStyle: getComputedStyle(colorLevel0Ref.current).backgroundColor,
+    });
 
-    canvasCtx.fillStyle = getComputedStyle(colorLevel0Ref.current).backgroundColor;
-
-    // キャンバス全体に10x10の角丸四角形を3pxずつスペースをあけて描画
-    for (let y = 0; y < canvasHeight; y += VISUALIZER_SETTINGS.CELL_HEIGHT + VISUALIZER_SETTINGS.CELL_SPACING) {
-      for (
-        let x = 0;
-        x < canvasRef.current.width;
-        x += VISUALIZER_SETTINGS.CELL_WIDTH + VISUALIZER_SETTINGS.CELL_SPACING
-      ) {
-        createRoundRectPath({
-          ctx: canvasCtx,
-          x,
-          y,
-          w: VISUALIZER_SETTINGS.CELL_WIDTH,
-          h: VISUALIZER_SETTINGS.CELL_HEIGHT,
-          r: VISUALIZER_SETTINGS.CELL_RADIUS,
-        });
-
-        canvasCtx.fill();
-      }
-    }
-
-    for (let i = 0; i < dataArray.length; i++) {
-      // バーの高さはキャンバスの高さに合わせる
-      // これは0〜255の値を0〜キャンバスの高さに変換している
-      const barHeight = (dataArray[i] / 255) * canvasHeight;
-
-      const x = i * (VISUALIZER_SETTINGS.CELL_WIDTH + VISUALIZER_SETTINGS.CELL_SPACING);
-
-      canvasCtx.fillStyle = getComputedStyle(colorLevel4Ref.current).backgroundColor;
-
-      let processedBarHeight = 0;
-
-      // barHeight以下の間、縦に3pxずつスペースをあけて下から上に描画
-      while (processedBarHeight < barHeight) {
-        const currentBlockHeight =
-          barHeight - processedBarHeight < VISUALIZER_SETTINGS.CELL_HEIGHT
-            ? barHeight - processedBarHeight
-            : VISUALIZER_SETTINGS.CELL_HEIGHT;
-
-        const currentY = canvasHeight - processedBarHeight - currentBlockHeight;
-
-        const currentRadius =
-          currentBlockHeight < VISUALIZER_SETTINGS.CELL_RADIUS
-            ? currentBlockHeight / 2
-            : VISUALIZER_SETTINGS.CELL_RADIUS;
-
-        createRoundRectPath({
-          ctx: canvasCtx,
-          x,
-          y: currentY,
-          w: VISUALIZER_SETTINGS.CELL_WIDTH,
-          h: currentBlockHeight,
-          r: currentRadius,
-        });
-
-        canvasCtx.fill();
-
-        processedBarHeight += currentBlockHeight + VISUALIZER_SETTINGS.CELL_SPACING;
-      }
-    }
+    // キャンバスに周波数データを描画
+    fillVisualizerCanvas({
+      canvas: canvasRef.current,
+      canvasCtx,
+      dataArray,
+      fillStyle: getComputedStyle(colorLevel4Ref.current).backgroundColor,
+    });
   };
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -185,15 +262,8 @@ export const AudioPlayer = () => {
 
     // 選択されたファイルを取得
     const file = event.target.files[0];
-    if (file && file.type === "audio/mpeg") {
-      // JSで音声をオーディオ操作するための前処理
-
-      // ファイルをArrayBufferとして読み込む
-      const arrayBuffer = await file.arrayBuffer();
-
-      // ArrayBufferをデコードしてAudioBufferを生成
-      const buffer = await audioContext.current.decodeAudioData(arrayBuffer);
-      setAudioBuffer(buffer);
+    if (file) {
+      setAudioBuffer(await getAudioBufferFromAudioFile({ file, audioContext: audioContext.current }));
     } else {
       alert("MP3ファイルを選択してください。");
     }
@@ -232,23 +302,13 @@ export const AudioPlayer = () => {
     // ソースノードを保存しておく
     audioSource.current = source;
 
-    // テーブルのセルを非表示にする
-    const trs = tBodyRef.current.querySelectorAll("tr");
-
-    for (let i = 0; i < trs.length; i++) {
-      const tds = trs[i].querySelectorAll("td");
-
-      for (let j = 1; j < tds.length; j++) {
-        applyOverrideStyle(tds[j], OVERRIDE_VISIBILITY_HIDDEN);
-
-        if (i === 0 && j === 1) {
-          applyOverrideStyle(tds[j], OVERRIDE_POSITION_RELATIVE);
-        }
-      }
-    }
-
     // オーディオの再生を開始
     source.start(0);
+
+    // テーブルのセルを非表示にする
+    applyOverrideStyleToTContributionGraph({
+      tBody: tBodyRef.current,
+    });
 
     // キャンバスの描画を無限ループで行う処理を開始
     animationId.current = requestAnimationFrame(function loop() {
