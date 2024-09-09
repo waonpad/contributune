@@ -1,9 +1,11 @@
 import css from "styled-jsx/css";
 
-const OVERRIDE_STYLES_PREFIX = "data-contributune-audio-playing-style-override" as const;
+export const STYLE_PREFIX = "data-contributune" as const;
 
-export const OVERRIDE_VISIBLITY_HIDDEN = `${OVERRIDE_STYLES_PREFIX}-visibility-hidden` as const;
-export const OVERRIDE_POSITION_RELATIVE = `${OVERRIDE_STYLES_PREFIX}-position-relative` as const;
+const OVERRIDE_STYLE_PREFIX = `${STYLE_PREFIX}-audio-playing-style-override` as const;
+
+export const OVERRIDE_VISIBLITY_HIDDEN = `${OVERRIDE_STYLE_PREFIX}-visibility-hidden` as const;
+export const OVERRIDE_POSITION_RELATIVE = `${OVERRIDE_STYLE_PREFIX}-position-relative` as const;
 
 export type OverrideStyleKey = typeof OVERRIDE_VISIBLITY_HIDDEN | typeof OVERRIDE_POSITION_RELATIVE;
 

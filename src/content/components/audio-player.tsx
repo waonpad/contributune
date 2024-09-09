@@ -12,6 +12,7 @@ import { useObserveElementExistence } from "../../app/utils/use-observe-element-
 import {
   OVERRIDE_POSITION_RELATIVE,
   OVERRIDE_VISIBLITY_HIDDEN,
+  STYLE_PREFIX,
   applyOverrideStyle,
   removeOverrideStyleFromAllElements,
 } from "../styles";
@@ -309,97 +310,117 @@ export const AudioPlayer = () => {
       <div>{audioContext.current?.state}</div>
       {audioControlsContainerRef.current &&
         createPortal(
-          <div
-            style={{
-              fontSize: 12,
-              paddingTop: 4,
-              paddingBottom: 4,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-              gap: 8,
-            }}
-          >
-            {/* TODO: マウスオーバー時のスタイル */}
-            <button
-              onClick={handleAudioFileInputButtonClick}
-              type="button"
-              style={{
-                backgroundColor: "transparent",
-                border: "solid 1px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: 4,
-                borderRadius: "0.375rem",
-                color: "var(--fgColor-muted)",
+          <>
+            {/* biome-ignore lint/style/noImplicitBoolean: <explanation> */}
+            <style jsx>
+              {`
+                [${STYLE_PREFIX}-audio-controls-container] {
+                  font-size: 12px;
+                  padding-top: 4px;
+                  padding-bottom: 4px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  width: 100%;
+                  gap: 8px;
+                }
+
+                [${STYLE_PREFIX}-audio-controls-container] button {
+                  cursor: pointer;
+                  background-color: transparent;
+                  border: solid 1px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  padding: 4px;
+                  border-radius: 0.375rem;
+                  color: var(--fgColor-muted);
+                }
+
+                [${STYLE_PREFIX}-audio-controls-container] button:hover {
+                  color: var(--fgColor-emphasis);
+                }
+
+                [${STYLE_PREFIX}-audio-controls-container] button:disabled {
+                  cursor: not-allowed;
+                  color: var(--fgColor-disabled);
+                }
+
+                [${STYLE_PREFIX}-audio-file-input] {
+                  display: none;
+                }
+
+                [${STYLE_PREFIX}-audio-controls-button-group] {
+                  display: flex;
+                }
+
+                [${STYLE_PREFIX}-audio-controls-button-group] button:not(:last-child) {
+                  border-top-right-radius: 0;
+                  border-bottom-right-radius: 0;
+                  border-right-width: 0.5px;
+                }
+
+                [${STYLE_PREFIX}-audio-controls-button-group] button:last-child {
+                  border-top-left-radius: 0;
+                  border-bottom-left-radius: 0;
+                  border-left-width: 0.5px;
+                }
+              `}
+            </style>
+            <div
+              {...{
+                [`${STYLE_PREFIX}-audio-controls-container`]: "",
               }}
             >
-              <FileMusic size={18} />
-            </button>
-            <input
-              type="file"
-              accept="audio/mpeg"
-              onChange={handleFileChange}
-              ref={audioFileInputRef}
-              style={{ display: "none" }}
-            />
-            <div style={{ display: "flex" }}>
-              <button
-                onClick={handlePlayPuaseToggleButtonClick}
-                disabled={!audioBuffer}
-                type="button"
-                style={{
-                  backgroundColor: "transparent",
-                  border: "solid 1px",
-                  borderRight: "none",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  padding: 4,
-                  borderRadius: "0.375rem 0 0 0.375rem",
-                  color: "var(--fgColor-muted)",
-                }}
-              >
-                {audioContext.current?.state === "running" ? <Pause size={18} /> : <Play size={18} />}
+              <button onClick={handleAudioFileInputButtonClick} type="button">
+                <FileMusic size={18} />
               </button>
-              <button
-                onClick={stopAudio}
-                disabled={!audioBuffer}
-                type="button"
-                style={{
-                  backgroundColor: "transparent",
-                  border: "solid 1px",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  padding: 4,
-                  borderRadius: "0 0.375rem 0.375rem 0",
-                  color: "var(--fgColor-muted)",
+              <input
+                type="file"
+                accept="audio/mpeg"
+                onChange={handleFileChange}
+                ref={audioFileInputRef}
+                {...{
+                  [`${STYLE_PREFIX}-audio-file-input`]: "",
                 }}
-              >
-                <X size={18} />
-              </button>
+              />
+              <div {...{ [`${STYLE_PREFIX}-audio-controls-button-group`]: "" }}>
+                <button onClick={handlePlayPuaseToggleButtonClick} disabled={!audioBuffer} type="button">
+                  {audioContext.current?.state === "running" ? <Pause size={18} /> : <Play size={18} />}
+                </button>
+                <button onClick={stopAudio} disabled={!audioBuffer} type="button">
+                  <X size={18} />
+                </button>
+              </div>
             </div>
-          </div>,
+          </>,
           audioControlsContainerRef.current,
         )}
       {canvasContainerRef.current &&
         tBodyRef.current &&
         audioContext.current?.state === "running" &&
         createPortal(
-          <canvas
-            ref={canvasRef}
-            width={tBodyRef.current.clientWidth - VISUALIZER_SETTINGS.MARGIN_LEFT}
-            height={tBodyRef.current.clientHeight}
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              visibility: "visible",
-            }}
-          />,
+          <>
+            {/* biome-ignore lint/style/noImplicitBoolean: <explanation> */}
+            <style jsx>
+              {`
+                [${STYLE_PREFIX}-audio-visualizer-canvas] {
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  visibility: visible;
+                }
+              `}
+            </style>
+            <canvas
+              ref={canvasRef}
+              width={tBodyRef.current.clientWidth - VISUALIZER_SETTINGS.MARGIN_LEFT}
+              height={tBodyRef.current.clientHeight}
+              {...{
+                [`${STYLE_PREFIX}-audio-visualizer-canvas`]: "",
+              }}
+            />
+          </>,
           canvasContainerRef.current,
         )}
     </>
