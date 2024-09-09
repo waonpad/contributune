@@ -1,3 +1,4 @@
+import { FileMusic, Pause, Play, X } from "lucide-react";
 import { type ChangeEvent, useEffect, useReducer, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -35,7 +36,7 @@ const VISUALIZER_SETTINGS = {
 export const AudioPlayer = () => {
   const [, reRender] = useReducer((s) => s + 1, 0);
 
-  const audioContext = useRef<AudioContext>(new AudioContext());
+  const audioContext = useRef<AudioContext | null>(null);
 
   const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null);
 
@@ -46,6 +47,8 @@ export const AudioPlayer = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const animationId = useRef<number | null>(null);
+
+  const audioFileInputRef = useRef<HTMLInputElement | null>(null);
 
   const { elementRef: tBodyRef } = useObserveElementExistence<HTMLTableSectionElement>({
     appearParams: [getGitHubYearlyContributionsGraphDataTableBody.selectors],
@@ -68,6 +71,8 @@ export const AudioPlayer = () => {
   });
 
   useEffect(() => {
+    audioContext.current = new AudioContext();
+
     // アンマウント時の処理
     return () => {
       (async () => {
@@ -175,7 +180,7 @@ export const AudioPlayer = () => {
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     // ファイルが選択されていない場合は処理を終了
-    if (!event.target.files) return;
+    if (!event.target.files || !audioContext.current) return;
 
     // 選択されたファイルを取得
     const file = event.target.files[0];
@@ -195,7 +200,7 @@ export const AudioPlayer = () => {
 
   const playAudio = () => {
     // 処理に必要なリソースが揃っていない場合は処理を終了
-    if (!audioBuffer || !tBodyRef.current) return;
+    if (!audioBuffer || !tBodyRef.current || !audioContext.current) return;
 
     // 既存のソースがあれば停止する
     if (audioSource.current) audioSource.current.stop();
@@ -250,9 +255,17 @@ export const AudioPlayer = () => {
     reRender();
   };
 
-  const stopAudio = () => {
+  const stopAudio = async () => {
     // オーディオの再生を停止
-    if (audioSource.current) audioSource.current.stop();
+    if (audioSource.current) {
+      audioSource.current.stop();
+      audioSource.current = null;
+    }
+
+    // TODO: 挙動がおかしい
+    if (audioContext.current) {
+      await audioContext.current.suspend();
+    }
 
     // キャンバスの描画を停止
     if (animationId.current) {
@@ -270,8 +283,30 @@ export const AudioPlayer = () => {
     reRender();
   };
 
+  const handleAudioFileInputButtonClick = () => {
+    audioFileInputRef.current?.click();
+  };
+
+  const handlePlayPuaseToggleButtonClick = async () => {
+    // TODO: 挙動がおかしい
+
+    if (audioSource.current) {
+      if (audioContext.current?.state === "running") {
+        await audioContext.current.suspend();
+      } else {
+        await audioContext.current?.resume();
+      }
+
+      reRender();
+    } else {
+      playAudio();
+    }
+  };
+
   return (
     <>
+      {/* TODO: 後で消す状態確認用state */}
+      <div>{audioContext.current?.state}</div>
       {audioControlsContainerRef.current &&
         createPortal(
           <div
@@ -283,21 +318,76 @@ export const AudioPlayer = () => {
               justifyContent: "center",
               alignItems: "center",
               width: "100%",
+              gap: 8,
             }}
           >
-            <input type="file" accept="audio/mpeg" onChange={handleFileChange} />
-            <button onClick={playAudio} disabled={!audioBuffer} type="button">
-              再生
+            {/* TODO: マウスオーバー時のスタイル */}
+            <button
+              onClick={handleAudioFileInputButtonClick}
+              type="button"
+              style={{
+                backgroundColor: "transparent",
+                border: "solid 1px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: 4,
+                borderRadius: "0.375rem",
+                color: "var(--fgColor-muted)",
+              }}
+            >
+              <FileMusic size={18} />
             </button>
-            <button onClick={stopAudio} disabled={!audioBuffer} type="button">
-              停止
-            </button>
+            <input
+              type="file"
+              accept="audio/mpeg"
+              onChange={handleFileChange}
+              ref={audioFileInputRef}
+              style={{ display: "none" }}
+            />
+            <div style={{ display: "flex" }}>
+              <button
+                onClick={handlePlayPuaseToggleButtonClick}
+                disabled={!audioBuffer}
+                type="button"
+                style={{
+                  backgroundColor: "transparent",
+                  border: "solid 1px",
+                  borderRight: "none",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: 4,
+                  borderRadius: "0.375rem 0 0 0.375rem",
+                  color: "var(--fgColor-muted)",
+                }}
+              >
+                {audioContext.current?.state === "running" ? <Pause size={18} /> : <Play size={18} />}
+              </button>
+              <button
+                onClick={stopAudio}
+                disabled={!audioBuffer}
+                type="button"
+                style={{
+                  backgroundColor: "transparent",
+                  border: "solid 1px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: 4,
+                  borderRadius: "0 0.375rem 0.375rem 0",
+                  color: "var(--fgColor-muted)",
+                }}
+              >
+                <X size={18} />
+              </button>
+            </div>
           </div>,
           audioControlsContainerRef.current,
         )}
       {canvasContainerRef.current &&
         tBodyRef.current &&
-        audioContext.current.state === "running" &&
+        audioContext.current?.state === "running" &&
         createPortal(
           <canvas
             ref={canvasRef}
