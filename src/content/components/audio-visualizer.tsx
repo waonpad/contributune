@@ -2,10 +2,10 @@ import { FileMusic, Pause, Play, X } from "lucide-react";
 import { type ChangeEvent, forwardRef, useEffect, useReducer, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
-  getGitHubYearlyContributionsContainer,
-  getGitHubYearlyContributionsGraphDataContainer,
-  getGitHubYearlyContributionsGraphDataTableBody,
-  getGitHubYearlyContributionsGraphLegend,
+  getContribsContainer,
+  getContribsGraphDataContainer,
+  getContribsGraphDataTableBody,
+  getContribsGraphLegend,
 } from "../../app/features/github/utils/element-getters";
 import { createRoundRectPath } from "../../app/utils/canvas";
 import { useObserveElementExistence } from "../../app/utils/use-observe-element-existense";
@@ -28,32 +28,32 @@ const ANALYSER_SETTINGS = {
 
 const VISUALIZER_SETTINGS = {
   CELL_WIDTH: 10,
-  CELL_HEIGHT: 10,
+  CELL_HEIT: 10,
   CELL_RADIUS: 2,
   CELL_SPACING: 3,
   MARGIN_LEFT: 31,
 } as const;
 
-const fillContributionGraphBase = ({
+const fillCanvasLikeContribsGraphBg = ({
   canvas,
   canvasCtx,
-  baseCellStyle,
+  fillStyle,
 }: {
   canvas: HTMLCanvasElement;
   canvasCtx: CanvasRenderingContext2D;
-  baseCellStyle: CanvasRenderingContext2D["fillStyle"];
+  fillStyle: CanvasRenderingContext2D["fillStyle"];
 }) => {
-  canvasCtx.fillStyle = baseCellStyle;
+  canvasCtx.fillStyle = fillStyle;
 
   // キャンバス全体に10x10の角丸四角形を3pxずつスペースをあけて描画
-  for (let y = 0; y < canvas.height; y += VISUALIZER_SETTINGS.CELL_HEIGHT + VISUALIZER_SETTINGS.CELL_SPACING) {
+  for (let y = 0; y < canvas.height; y += VISUALIZER_SETTINGS.CELL_HEIT + VISUALIZER_SETTINGS.CELL_SPACING) {
     for (let x = 0; x < canvas.width; x += VISUALIZER_SETTINGS.CELL_WIDTH + VISUALIZER_SETTINGS.CELL_SPACING) {
       createRoundRectPath({
         ctx: canvasCtx,
         x,
         y,
         w: VISUALIZER_SETTINGS.CELL_WIDTH,
-        h: VISUALIZER_SETTINGS.CELL_HEIGHT,
+        h: VISUALIZER_SETTINGS.CELL_HEIT,
         r: VISUALIZER_SETTINGS.CELL_RADIUS,
       });
 
@@ -62,7 +62,7 @@ const fillContributionGraphBase = ({
   }
 };
 
-const fillVisualizerCanvas = ({
+const fillCanvasLikeContribsGraphAsVisuarizer = ({
   canvas,
   canvasCtx,
   dataArray,
@@ -85,9 +85,9 @@ const fillVisualizerCanvas = ({
     // barHeight以下の間、縦に3pxずつスペースをあけて下から上に描画
     while (processedBarHeight < barHeight) {
       const currentBlockHeight =
-        barHeight - processedBarHeight < VISUALIZER_SETTINGS.CELL_HEIGHT
+        barHeight - processedBarHeight < VISUALIZER_SETTINGS.CELL_HEIT
           ? barHeight - processedBarHeight
-          : VISUALIZER_SETTINGS.CELL_HEIGHT;
+          : VISUALIZER_SETTINGS.CELL_HEIT;
 
       const currentRadius =
         currentBlockHeight < VISUALIZER_SETTINGS.CELL_RADIUS ? currentBlockHeight / 2 : VISUALIZER_SETTINGS.CELL_RADIUS;
@@ -108,7 +108,8 @@ const fillVisualizerCanvas = ({
   }
 };
 
-const applyOverrideStyleToTContributionGraph = ({
+// TODO: いい感じの名前
+const applyOverrideStyleToTContribGraph = ({
   tBody,
 }: {
   tBody: HTMLTableSectionElement;
@@ -129,7 +130,7 @@ const applyOverrideStyleToTContributionGraph = ({
   }
 };
 
-const getFrequencyData = (analyser: AnalyserNode) => {
+const getUint8ArrayFromAnalyser = (analyser: AnalyserNode) => {
   // 周波数データを取得
   const bufferLength = analyser.frequencyBinCount;
 
@@ -144,33 +145,29 @@ const getFrequencyData = (analyser: AnalyserNode) => {
 
 const getAudioBufferFromAudioFile = async ({
   file,
-  audioContext,
+  audioCtx,
 }: {
   file: File;
-  audioContext: AudioContext;
+  audioCtx: AudioContext;
 }) => {
-  if (file.type !== "audio/mpeg") {
-    throw new Error("MP3ファイルを選択してください。");
-  }
-
   // ファイルをArrayBufferとして読み込む
   const arrayBuffer = await file.arrayBuffer();
 
   // ArrayBufferをデコードしてAudioBufferを生成
-  return await audioContext.decodeAudioData(arrayBuffer);
+  return await audioCtx.decodeAudioData(arrayBuffer);
 };
 
 export const AudioControls = ({
   audioPlayingState,
-  handleFileChange,
-  handlePlayPuaseToggleButtonClick,
-  stopAudio,
+  onFileChange,
+  onPlayPuaseToggleButtonClick,
+  onStopButtonClick,
   controlsDisabled,
 }: {
   audioPlayingState: (typeof AudioContext)["prototype"]["state"];
-  handleFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  handlePlayPuaseToggleButtonClick: () => void;
-  stopAudio: () => void;
+  onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onPlayPuaseToggleButtonClick: () => void;
+  onStopButtonClick: () => void;
   controlsDisabled: boolean;
 }) => {
   const audioFileInputRef = useRef<HTMLInputElement | null>(null);
@@ -192,17 +189,17 @@ export const AudioControls = ({
         <input
           type="file"
           accept="audio/mpeg"
-          onChange={handleFileChange}
+          onChange={onFileChange}
           ref={audioFileInputRef}
           {...{
             [`${STYLE_PREFIX}-audio-file-input`]: "",
           }}
         />
         <div {...{ [`${STYLE_PREFIX}-audio-controls-button-group`]: "" }}>
-          <button onClick={handlePlayPuaseToggleButtonClick} disabled={controlsDisabled} type="button">
+          <button onClick={onPlayPuaseToggleButtonClick} disabled={controlsDisabled} type="button">
             {audioPlayingState === "running" ? <Pause size={18} /> : <Play size={18} />}
           </button>
-          <button onClick={stopAudio} disabled={controlsDisabled} type="button">
+          <button onClick={onStopButtonClick} disabled={controlsDisabled} type="button">
             <X size={18} />
           </button>
         </div>
@@ -269,7 +266,7 @@ export const AudioControls = ({
 
 export const AudioControlsRenderer = (props: Parameters<typeof AudioControls>[0]) => {
   const { elementRef: containerRef } = useObserveElementExistence<HTMLDivElement>({
-    appearParams: [getGitHubYearlyContributionsGraphDataContainer.selectors],
+    appearParams: [getContribsGraphDataContainer.selectors],
   });
 
   if (!containerRef.current) return null;
@@ -277,21 +274,20 @@ export const AudioControlsRenderer = (props: Parameters<typeof AudioControls>[0]
   return createPortal(<AudioControls {...props} />, containerRef.current);
 };
 
-export const VisualizerCanvas = forwardRef<HTMLCanvasElement, { width: number; height: number }>(
-  ({ width, height }, ref) => {
-    return (
-      <>
-        <canvas
-          ref={ref}
-          width={width}
-          height={height}
-          {...{
-            [`${STYLE_PREFIX}-audio-visualizer-canvas`]: "",
-          }}
-        />
-        {/* biome-ignore lint/style/noImplicitBoolean: <explanation> */}
-        <style jsx>
-          {`
+export const Visualizer = forwardRef<HTMLCanvasElement, { width: number; height: number }>(({ width, height }, ref) => {
+  return (
+    <>
+      <canvas
+        ref={ref}
+        width={width}
+        height={height}
+        {...{
+          [`${STYLE_PREFIX}-audio-visualizer-canvas`]: "",
+        }}
+      />
+      {/* biome-ignore lint/style/noImplicitBoolean: <explanation> */}
+      <style jsx>
+        {`
         [${STYLE_PREFIX}-audio-visualizer-canvas] {
           position: absolute;
           top: 0;
@@ -299,26 +295,23 @@ export const VisualizerCanvas = forwardRef<HTMLCanvasElement, { width: number; h
           visibility: visible;
         }
       `}
-        </style>
-      </>
-    );
-  },
-);
+      </style>
+    </>
+  );
+});
 
-export const VisualizerCanvasRenderer = forwardRef<HTMLCanvasElement, { width: number; height: number }>(
-  (props, ref) => {
-    const { elementRef: containerRef } = useObserveElementExistence({
-      appearParams: [`${getGitHubYearlyContributionsGraphDataTableBody.selectors} > tr > td:nth-of-type(2)`],
-    });
+export const VisualizerRenderer = forwardRef<HTMLCanvasElement, { width: number; height: number }>((props, ref) => {
+  const { elementRef: containerRef } = useObserveElementExistence({
+    appearParams: [`${getContribsGraphDataTableBody.selectors} > tr > td:nth-of-type(2)`],
+  });
 
-    if (!containerRef.current) return null;
+  if (!containerRef.current) return null;
 
-    return createPortal(<VisualizerCanvas {...props} ref={ref} />, containerRef.current);
-  },
-);
+  return createPortal(<Visualizer {...props} ref={ref} />, containerRef.current);
+});
 
 export const useAudio = () => {
-  const audioContext = useRef<AudioContext | null>(null);
+  const audioCtx = useRef<AudioContext | null>(null);
 
   const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null);
 
@@ -327,13 +320,13 @@ export const useAudio = () => {
   const audioAnalyser = useRef<AnalyserNode | null>(null);
 
   useEffect(() => {
-    audioContext.current = new AudioContext();
+    audioCtx.current = new AudioContext();
 
     // アンマウント時の処理
     return () => {
       (async () => {
         // コンポーネントがアンマウントされたときにAudioContextを終了
-        if (audioContext.current) await audioContext.current.close();
+        if (audioCtx.current) await audioCtx.current.close();
 
         // オーディオの再生を停止
         if (audioSource.current) audioSource.current.stop();
@@ -342,21 +335,21 @@ export const useAudio = () => {
   }, []);
 
   const playAudio = () => {
-    if (!audioBuffer || !audioContext.current) return;
+    if (!audioBuffer || !audioCtx.current) return;
 
     // 既存のソースがあれば停止する
     if (audioSource.current) audioSource.current.stop();
 
-    audioContext.current = new AudioContext();
+    audioCtx.current = new AudioContext();
 
     // AudioBufferSourceNodeを作成
-    const source = audioContext.current.createBufferSource();
+    const source = audioCtx.current.createBufferSource();
 
     // ソースノードにバッファを設定
     source.buffer = audioBuffer;
 
     // アナライザーノードを作成
-    const analyser = audioContext.current.createAnalyser();
+    const analyser = audioCtx.current.createAnalyser();
 
     analyser.fftSize = ANALYSER_SETTINGS.FFT_SIZE;
 
@@ -367,7 +360,7 @@ export const useAudio = () => {
     source.connect(analyser);
 
     // アナライザーノードをAudioContextのdestinationに接続
-    analyser.connect(audioContext.current.destination);
+    analyser.connect(audioCtx.current.destination);
 
     // ソースノードを保存しておく
     audioSource.current = source;
@@ -383,20 +376,20 @@ export const useAudio = () => {
       audioSource.current = null;
     }
 
-    if (audioContext.current) {
-      await audioContext.current.suspend();
+    if (audioCtx.current) {
+      await audioCtx.current.suspend();
     }
   };
 
   const togglePlayPause = async () => {
     if (audioSource.current) {
-      if (audioContext.current?.state === "running") {
-        await audioContext.current.suspend();
+      if (audioCtx.current?.state === "running") {
+        await audioCtx.current.suspend();
 
         return "suspended";
       }
 
-      await audioContext.current?.resume();
+      await audioCtx.current?.resume();
 
       return "resumed";
     }
@@ -411,28 +404,28 @@ export const useAudio = () => {
     setAudioBuffer,
     audioSource,
     audioAnalyser,
-    audioContext,
+    audioCtx,
     playAudio,
     stopAudio,
     togglePlayPause,
   };
 };
 
-export const useCanvas = () => {
+export const useVisualizer = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const animationId = useRef<number | null>(null);
 
   const { elementRef: tBodyRef } = useObserveElementExistence<HTMLTableSectionElement>({
-    appearParams: [getGitHubYearlyContributionsGraphDataTableBody.selectors],
+    appearParams: [getContribsGraphDataTableBody.selectors],
   });
 
   const { elementRef: colorLevel0Ref } = useObserveElementExistence<HTMLDivElement>({
-    appearParams: [getGitHubYearlyContributionsGraphLegend.selectors(0)],
+    appearParams: [getContribsGraphLegend.selectors(0)],
   });
 
   const { elementRef: colorLevel4Ref } = useObserveElementExistence<HTMLDivElement>({
-    appearParams: [getGitHubYearlyContributionsGraphLegend.selectors(4)],
+    appearParams: [getContribsGraphLegend.selectors(4)],
   });
 
   useEffect(() => {
@@ -462,14 +455,14 @@ export const useCanvas = () => {
     canvasCtx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
     // キャンバスの背景を塗りつぶす
-    fillContributionGraphBase({
+    fillCanvasLikeContribsGraphBg({
       canvas: canvasRef.current,
       canvasCtx,
-      baseCellStyle: getComputedStyle(colorLevel0Ref.current).backgroundColor,
+      fillStyle: getComputedStyle(colorLevel0Ref.current).backgroundColor,
     });
 
     // キャンバスに周波数データを描画
-    fillVisualizerCanvas({
+    fillCanvasLikeContribsGraphAsVisuarizer({
       canvas: canvasRef.current,
       canvasCtx,
       dataArray,
@@ -481,11 +474,11 @@ export const useCanvas = () => {
     if (!tBodyRef.current) return;
 
     // テーブルのセルを非表示にする
-    applyOverrideStyleToTContributionGraph({ tBody: tBodyRef.current });
+    applyOverrideStyleToTContribGraph({ tBody: tBodyRef.current });
 
     // キャンバスの描画を無限ループで行う処理を開始
     animationId.current = requestAnimationFrame(function loop() {
-      renderFrame(getFrequencyData(analyser));
+      renderFrame(getUint8ArrayFromAnalyser(analyser));
       animationId.current = requestAnimationFrame(loop);
     });
   };
@@ -508,21 +501,21 @@ export const useCanvas = () => {
   return { canvasRef, renderFrame, animationId, tBodyRef, startRenderFrameLoop, stopRenderFrameLoop };
 };
 
-export const AudioPlayer = () => {
+export const AudioVisualizer = () => {
   const [, reRender] = useReducer((s) => s + 1, 0);
 
-  const { audioBuffer, setAudioBuffer, audioAnalyser, audioContext, stopAudio, togglePlayPause } = useAudio();
+  const { audioBuffer, setAudioBuffer, audioAnalyser, audioCtx, stopAudio, togglePlayPause } = useAudio();
 
-  const { canvasRef, tBodyRef, startRenderFrameLoop, stopRenderFrameLoop } = useCanvas();
+  const { canvasRef, tBodyRef, startRenderFrameLoop, stopRenderFrameLoop } = useVisualizer();
 
-  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+  const onFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     // ファイルが選択されていない場合は処理を終了
-    if (!event.target.files || !audioContext.current) return;
+    if (!event.target.files || !audioCtx.current) return;
 
     // 選択されたファイルを取得
     const file = event.target.files[0];
     if (file) {
-      setAudioBuffer(await getAudioBufferFromAudioFile({ file, audioContext: audioContext.current }));
+      setAudioBuffer(await getAudioBufferFromAudioFile({ file, audioCtx: audioCtx.current }));
     } else {
       alert("MP3ファイルを選択してください。");
     }
@@ -536,7 +529,7 @@ export const AudioPlayer = () => {
     reRender();
   };
 
-  const handlePlayPuaseToggleButtonClick = async () => {
+  const onPlayPuaseToggleButtonClick = async () => {
     const state = await togglePlayPause();
 
     if (state === "started") {
@@ -549,14 +542,14 @@ export const AudioPlayer = () => {
   return (
     <>
       <AudioControlsRenderer
-        audioPlayingState={audioContext.current?.state ?? "suspended"}
-        handleFileChange={handleFileChange}
-        handlePlayPuaseToggleButtonClick={handlePlayPuaseToggleButtonClick}
-        stopAudio={stop}
+        audioPlayingState={audioCtx.current?.state ?? "suspended"}
+        onFileChange={onFileChange}
+        onPlayPuaseToggleButtonClick={onPlayPuaseToggleButtonClick}
+        onStopButtonClick={stop}
         controlsDisabled={!audioBuffer}
       />
       {tBodyRef.current && (
-        <VisualizerCanvasRenderer
+        <VisualizerRenderer
           width={tBodyRef.current.clientWidth - VISUALIZER_SETTINGS.MARGIN_LEFT}
           height={tBodyRef.current.clientHeight}
           ref={canvasRef}
@@ -566,12 +559,12 @@ export const AudioPlayer = () => {
   );
 };
 
-export const AudioPlayerRenderer = () => {
+export const AudioVisualizerRenderer = () => {
   const { elementRef: containerRef } = useObserveElementExistence({
-    appearParams: [getGitHubYearlyContributionsContainer.selectors],
+    appearParams: [getContribsContainer.selectors],
   });
 
   if (!containerRef.current) return null;
 
-  return createPortal(<AudioPlayer />, containerRef.current);
+  return createPortal(<AudioVisualizer />, containerRef.current);
 };

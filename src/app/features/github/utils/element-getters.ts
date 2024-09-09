@@ -1,74 +1,58 @@
-export const getGitHubYearlyContributionsContainer = {
+export const getContribsContainer = {
   selectors: ".js-yearly-contributions",
   node: () => document,
-  exec: () =>
-    getGitHubYearlyContributionsContainer
-      .node()
-      .querySelector<HTMLDivElement>(getGitHubYearlyContributionsContainer.selectors),
+  exec: () => getContribsContainer.node().querySelector<HTMLDivElement>(getContribsContainer.selectors),
 } as const;
 
-export const getGitHubYearlyContributionsMainContainer = {
+export const getContribsMainContainer = {
   selectors: ".js-yearly-contributions > div",
   node: () => document,
-  exec: () =>
-    getGitHubYearlyContributionsMainContainer
-      .node()
-      .querySelector<HTMLDivElement>(getGitHubYearlyContributionsMainContainer.selectors),
+  exec: () => getContribsMainContainer.node().querySelector<HTMLDivElement>(getContribsMainContainer.selectors),
 } as const;
 
-export const getGitHubYearlyContributionsGraphContainer = {
+export const getContribsGraphContainer = {
   selectors: ".js-yearly-contributions > div > .graph-before-activity-overview",
   node: () => document,
-  exec: () =>
-    getGitHubYearlyContributionsGraphContainer
-      .node()
-      .querySelector<HTMLDivElement>(getGitHubYearlyContributionsGraphContainer.selectors),
+  exec: () => getContribsGraphContainer.node().querySelector<HTMLDivElement>(getContribsGraphContainer.selectors),
 } as const;
 
-export const getGitHubYearlyContributionsGraphDataContainer = {
+export const getContribsGraphDataContainer = {
   selectors: ".js-yearly-contributions > div > .graph-before-activity-overview > div[data-graph-url]",
   node: () => document,
   exec: () =>
-    getGitHubYearlyContributionsGraphDataContainer
-      .node()
-      .querySelector<HTMLDivElement>(getGitHubYearlyContributionsGraphDataContainer.selectors),
+    getContribsGraphDataContainer.node().querySelector<HTMLDivElement>(getContribsGraphDataContainer.selectors),
 } as const;
 
-export const getGitHubYearlyContributionsGraphDataScrollableContainer = {
+export const getContribsGraphDataScrollableContainer = {
   selectors: ".js-yearly-contributions > div > .graph-before-activity-overview > div[data-graph-url] > div",
   node: () => document,
   exec: () =>
-    getGitHubYearlyContributionsGraphDataScrollableContainer
+    getContribsGraphDataScrollableContainer
       .node()
-      .querySelector<HTMLDivElement>(getGitHubYearlyContributionsGraphDataScrollableContainer.selectors),
+      .querySelector<HTMLDivElement>(getContribsGraphDataScrollableContainer.selectors),
 } as const;
 
-export const getGitHubYearlyContributionsGraphDataTable = {
+export const getContribsGraphDataTable = {
   selectors: ".js-yearly-contributions > div > .graph-before-activity-overview > div[data-graph-url] > div > table",
   node: () => document,
-  exec: () =>
-    getGitHubYearlyContributionsGraphDataTable
-      .node()
-      .querySelector<HTMLTableElement>(getGitHubYearlyContributionsGraphDataTable.selectors),
+  exec: () => getContribsGraphDataTable.node().querySelector<HTMLTableElement>(getContribsGraphDataTable.selectors),
 } as const;
 
-export const getGitHubYearlyContributionsGraphDataTableBody = {
+export const getContribsGraphDataTableBody = {
   selectors:
     ".js-yearly-contributions > div > .graph-before-activity-overview > div[data-graph-url] > div > table > tbody",
   node: () => document,
   exec: () =>
-    getGitHubYearlyContributionsGraphDataTableBody
+    getContribsGraphDataTableBody
       .node()
-      .querySelector<HTMLTableSectionElement>(getGitHubYearlyContributionsGraphDataTableBody.selectors),
+      .querySelector<HTMLTableSectionElement>(getContribsGraphDataTableBody.selectors),
 } as const;
 
-export type GitHubYearlyContributionsGraphLegendLevel = 0 | 1 | 2 | 3 | 4;
+export type ContribsGraphLegendLevel = 0 | 1 | 2 | 3 | 4;
 
-export const getGitHubYearlyContributionsGraphLegend = {
-  selectors: (level: GitHubYearlyContributionsGraphLegendLevel) => `#contribution-graph-legend-level-${level}` as const,
+export const getContribsGraphLegend = {
+  selectors: (level: ContribsGraphLegendLevel) => `#contribution-graph-legend-level-${level}` as const,
   node: () => document,
-  exec: (level: GitHubYearlyContributionsGraphLegendLevel) =>
-    getGitHubYearlyContributionsGraphLegend
-      .node()
-      .querySelector<HTMLDivElement>(getGitHubYearlyContributionsGraphLegend.selectors(level)),
+  exec: (level: ContribsGraphLegendLevel) =>
+    getContribsGraphLegend.node().querySelector<HTMLDivElement>(getContribsGraphLegend.selectors(level)),
 } as const;
