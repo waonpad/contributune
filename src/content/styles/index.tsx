@@ -4,13 +4,13 @@ export const STYLE_PREFIX = "data-contributune" as const;
 
 const OVERRIDE_STYLE_PREFIX = `${STYLE_PREFIX}-audio-playing-style-override` as const;
 
-export const OVERRIDE_VISIBLITY_HIDDEN = `${OVERRIDE_STYLE_PREFIX}-visibility-hidden` as const;
+export const OVERRIDE_VISIBILITY_HIDDEN = `${OVERRIDE_STYLE_PREFIX}-visibility-hidden` as const;
 export const OVERRIDE_POSITION_RELATIVE = `${OVERRIDE_STYLE_PREFIX}-position-relative` as const;
 
-export type OverrideStyleKey = typeof OVERRIDE_VISIBLITY_HIDDEN | typeof OVERRIDE_POSITION_RELATIVE;
+export type OverrideStyleKey = typeof OVERRIDE_VISIBILITY_HIDDEN | typeof OVERRIDE_POSITION_RELATIVE;
 
 export const overrideStyles = css.global`
-  [${OVERRIDE_VISIBLITY_HIDDEN}] {
+  [${OVERRIDE_VISIBILITY_HIDDEN}] {
     visibility: hidden;
   }
 

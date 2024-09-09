@@ -11,7 +11,7 @@ import { createRoundRectPath } from "../../app/utils/canvas";
 import { useObserveElementExistence } from "../../app/utils/use-observe-element-existense";
 import {
   OVERRIDE_POSITION_RELATIVE,
-  OVERRIDE_VISIBLITY_HIDDEN,
+  OVERRIDE_VISIBILITY_HIDDEN,
   STYLE_PREFIX,
   applyOverrideStyle,
   removeOverrideStyleFromAllElements,
@@ -206,6 +206,9 @@ export const AudioPlayer = () => {
     // 既存のソースがあれば停止する
     if (audioSource.current) audioSource.current.stop();
 
+    // AudioContextを再生成すると挙動が安定したがよくわからない
+    audioContext.current = new AudioContext();
+
     // AudioBufferSourceNodeを作成
     const source = audioContext.current.createBufferSource();
 
@@ -236,7 +239,7 @@ export const AudioPlayer = () => {
       const tds = trs[i].querySelectorAll("td");
 
       for (let j = 1; j < tds.length; j++) {
-        applyOverrideStyle(tds[j], OVERRIDE_VISIBLITY_HIDDEN);
+        applyOverrideStyle(tds[j], OVERRIDE_VISIBILITY_HIDDEN);
 
         if (i === 0 && j === 1) {
           applyOverrideStyle(tds[j], OVERRIDE_POSITION_RELATIVE);
@@ -278,7 +281,7 @@ export const AudioPlayer = () => {
     canvasRef.current?.getContext("2d")?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
     // スタイルのオーバーライドを解除
-    removeOverrideStyleFromAllElements(OVERRIDE_VISIBLITY_HIDDEN);
+    removeOverrideStyleFromAllElements(OVERRIDE_VISIBILITY_HIDDEN);
     removeOverrideStyleFromAllElements(OVERRIDE_POSITION_RELATIVE);
 
     reRender();
@@ -289,8 +292,6 @@ export const AudioPlayer = () => {
   };
 
   const handlePlayPuaseToggleButtonClick = async () => {
-    // TODO: 挙動がおかしい
-
     if (audioSource.current) {
       if (audioContext.current?.state === "running") {
         await audioContext.current.suspend();
