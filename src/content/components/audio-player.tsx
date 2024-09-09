@@ -266,7 +266,6 @@ export const AudioPlayer = () => {
       audioSource.current = null;
     }
 
-    // TODO: 挙動がおかしい
     if (audioContext.current) {
       await audioContext.current.suspend();
     }
@@ -307,8 +306,6 @@ export const AudioPlayer = () => {
 
   return (
     <>
-      {/* TODO: 後で消す状態確認用state */}
-      <div>{audioContext.current?.state}</div>
       {audioControlsContainerRef.current &&
         createPortal(
           <>
