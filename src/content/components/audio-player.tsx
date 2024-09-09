@@ -1,5 +1,5 @@
 import { FileMusic, Pause, Play, X } from "lucide-react";
-import { type ChangeEvent, useEffect, useReducer, useRef, useState } from "react";
+import { type ChangeEvent, forwardRef, useEffect, useReducer, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   getGitHubYearlyContributionsContainer,
@@ -160,33 +160,164 @@ const getAudioBufferFromAudioFile = async ({
   return await audioContext.decodeAudioData(arrayBuffer);
 };
 
-const useElms = () => {
-  const { elementRef: tBodyRef } = useObserveElementExistence<HTMLTableSectionElement>({
-    appearParams: [getGitHubYearlyContributionsGraphDataTableBody.selectors],
-  });
+export const AudioControls = ({
+  audioPlayingState,
+  handleFileChange,
+  handlePlayPuaseToggleButtonClick,
+  stopAudio,
+  controlsDisabled,
+}: {
+  audioPlayingState: (typeof AudioContext)["prototype"]["state"];
+  handleFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  handlePlayPuaseToggleButtonClick: () => void;
+  stopAudio: () => void;
+  controlsDisabled: boolean;
+}) => {
+  const audioFileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const { elementRef: canvasContainerRef } = useObserveElementExistence({
-    appearParams: [`${getGitHubYearlyContributionsGraphDataTableBody.selectors} > tr > td:nth-of-type(2)`],
-  });
+  const handleAudioFileInputButtonClick = () => {
+    audioFileInputRef.current?.click();
+  };
 
-  const { elementRef: audioControlsContainerRef } = useObserveElementExistence<HTMLDivElement>({
+  return (
+    <>
+      <div
+        {...{
+          [`${STYLE_PREFIX}-audio-controls-container`]: "",
+        }}
+      >
+        <button onClick={handleAudioFileInputButtonClick} type="button">
+          <FileMusic size={18} />
+        </button>
+        <input
+          type="file"
+          accept="audio/mpeg"
+          onChange={handleFileChange}
+          ref={audioFileInputRef}
+          {...{
+            [`${STYLE_PREFIX}-audio-file-input`]: "",
+          }}
+        />
+        <div {...{ [`${STYLE_PREFIX}-audio-controls-button-group`]: "" }}>
+          <button onClick={handlePlayPuaseToggleButtonClick} disabled={controlsDisabled} type="button">
+            {audioPlayingState === "running" ? <Pause size={18} /> : <Play size={18} />}
+          </button>
+          <button onClick={stopAudio} disabled={controlsDisabled} type="button">
+            <X size={18} />
+          </button>
+        </div>
+      </div>
+      {/* biome-ignore lint/style/noImplicitBoolean: <explanation> */}
+      <style jsx>
+        {`
+      [${STYLE_PREFIX}-audio-controls-container] {
+        font-size: 12px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        gap: 8px;
+      }
+
+      [${STYLE_PREFIX}-audio-controls-container] button {
+        cursor: pointer;
+        background-color: transparent;
+        border: solid 1px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 4px;
+        border-radius: 0.375rem;
+        color: var(--fgColor-muted);
+      }
+
+      [${STYLE_PREFIX}-audio-controls-container] button:hover {
+        color: var(--fgColor-emphasis);
+      }
+
+      [${STYLE_PREFIX}-audio-controls-container] button:disabled {
+        cursor: not-allowed;
+        color: var(--fgColor-disabled);
+      }
+
+      [${STYLE_PREFIX}-audio-file-input] {
+        display: none;
+      }
+
+      [${STYLE_PREFIX}-audio-controls-button-group] {
+        display: flex;
+      }
+
+      [${STYLE_PREFIX}-audio-controls-button-group] button:not(:last-child) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-right-width: 0.5px;
+      }
+
+      [${STYLE_PREFIX}-audio-controls-button-group] button:last-child {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-left-width: 0.5px;
+      }
+    `}
+      </style>
+    </>
+  );
+};
+
+export const AudioControlsRenderer = (props: Parameters<typeof AudioControls>[0]) => {
+  const { elementRef: containerRef } = useObserveElementExistence<HTMLDivElement>({
     appearParams: [getGitHubYearlyContributionsGraphDataContainer.selectors],
   });
 
-  const { elementRef: colorLevel0Ref } = useObserveElementExistence<HTMLDivElement>({
-    appearParams: [getGitHubYearlyContributionsGraphLegend.selectors(0)],
-  });
+  if (!containerRef.current) return null;
 
-  const { elementRef: colorLevel4Ref } = useObserveElementExistence<HTMLDivElement>({
-    appearParams: [getGitHubYearlyContributionsGraphLegend.selectors(4)],
-  });
-
-  return { tBodyRef, canvasContainerRef, audioControlsContainerRef, colorLevel0Ref, colorLevel4Ref };
+  return createPortal(<AudioControls {...props} />, containerRef.current);
 };
 
-export const AudioPlayer = () => {
-  const [, reRender] = useReducer((s) => s + 1, 0);
+export const VisualizerCanvas = forwardRef<HTMLCanvasElement, { width: number; height: number }>(
+  ({ width, height }, ref) => {
+    return (
+      <>
+        <canvas
+          ref={ref}
+          width={width}
+          height={height}
+          {...{
+            [`${STYLE_PREFIX}-audio-visualizer-canvas`]: "",
+          }}
+        />
+        {/* biome-ignore lint/style/noImplicitBoolean: <explanation> */}
+        <style jsx>
+          {`
+        [${STYLE_PREFIX}-audio-visualizer-canvas] {
+          position: absolute;
+          top: 0;
+          left: 0;
+          visibility: visible;
+        }
+      `}
+        </style>
+      </>
+    );
+  },
+);
 
+export const VisualizerCanvasRenderer = forwardRef<HTMLCanvasElement, { width: number; height: number }>(
+  (props, ref) => {
+    const { elementRef: containerRef } = useObserveElementExistence({
+      appearParams: [`${getGitHubYearlyContributionsGraphDataTableBody.selectors} > tr > td:nth-of-type(2)`],
+    });
+
+    if (!containerRef.current) return null;
+
+    return createPortal(<VisualizerCanvas {...props} ref={ref} />, containerRef.current);
+  },
+);
+
+export const useAudio = () => {
   const audioContext = useRef<AudioContext | null>(null);
 
   const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null);
@@ -194,14 +325,6 @@ export const AudioPlayer = () => {
   const audioSource = useRef<AudioBufferSourceNode | null>(null);
 
   const audioAnalyser = useRef<AnalyserNode | null>(null);
-
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  const animationId = useRef<number | null>(null);
-
-  const audioFileInputRef = useRef<HTMLInputElement | null>(null);
-
-  const { tBodyRef, canvasContainerRef, audioControlsContainerRef, colorLevel0Ref, colorLevel4Ref } = useElms();
 
   useEffect(() => {
     audioContext.current = new AudioContext();
@@ -214,69 +337,16 @@ export const AudioPlayer = () => {
 
         // オーディオの再生を停止
         if (audioSource.current) audioSource.current.stop();
-
-        // キャンバスの描画を停止
-        if (animationId.current) {
-          cancelAnimationFrame(animationId.current);
-          animationId.current = null;
-        }
       })();
     };
   }, []);
 
-  const renderFrame = () => {
-    // 処理に必要なリソースが揃っていない場合は処理を終了
-    if (!canvasRef.current || !audioAnalyser.current || !colorLevel0Ref.current || !colorLevel4Ref.current) return;
-
-    // キャンバスのコンテキストを取得
-    const canvasCtx = canvasRef.current.getContext("2d");
-
-    // キャンバスのコンテキストが取得できない場合は処理を終了
-    if (!canvasCtx) return;
-
-    // 周波数データを取得
-    const dataArray = getFrequencyData(audioAnalyser.current);
-
-    // キャンバスを初期化
-    canvasCtx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-
-    // キャンバスの背景を塗りつぶす
-    fillContributionGraphBase({
-      canvas: canvasRef.current,
-      canvasCtx,
-      baseCellStyle: getComputedStyle(colorLevel0Ref.current).backgroundColor,
-    });
-
-    // キャンバスに周波数データを描画
-    fillVisualizerCanvas({
-      canvas: canvasRef.current,
-      canvasCtx,
-      dataArray,
-      fillStyle: getComputedStyle(colorLevel4Ref.current).backgroundColor,
-    });
-  };
-
-  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    // ファイルが選択されていない場合は処理を終了
-    if (!event.target.files || !audioContext.current) return;
-
-    // 選択されたファイルを取得
-    const file = event.target.files[0];
-    if (file) {
-      setAudioBuffer(await getAudioBufferFromAudioFile({ file, audioContext: audioContext.current }));
-    } else {
-      alert("MP3ファイルを選択してください。");
-    }
-  };
-
   const playAudio = () => {
-    // 処理に必要なリソースが揃っていない場合は処理を終了
-    if (!audioBuffer || !tBodyRef.current || !audioContext.current) return;
+    if (!audioBuffer || !audioContext.current) return;
 
     // 既存のソースがあれば停止する
     if (audioSource.current) audioSource.current.stop();
 
-    // AudioContextを再生成すると挙動が安定したがよくわからない
     audioContext.current = new AudioContext();
 
     // AudioBufferSourceNodeを作成
@@ -304,19 +374,6 @@ export const AudioPlayer = () => {
 
     // オーディオの再生を開始
     source.start(0);
-
-    // テーブルのセルを非表示にする
-    applyOverrideStyleToTContributionGraph({
-      tBody: tBodyRef.current,
-    });
-
-    // キャンバスの描画を無限ループで行う処理を開始
-    animationId.current = requestAnimationFrame(function loop() {
-      renderFrame();
-      animationId.current = requestAnimationFrame(loop);
-    });
-
-    reRender();
   };
 
   const stopAudio = async () => {
@@ -329,7 +386,111 @@ export const AudioPlayer = () => {
     if (audioContext.current) {
       await audioContext.current.suspend();
     }
+  };
 
+  const togglePlayPause = async () => {
+    if (audioSource.current) {
+      if (audioContext.current?.state === "running") {
+        await audioContext.current.suspend();
+
+        return "suspended";
+      }
+
+      await audioContext.current?.resume();
+
+      return "resumed";
+    }
+
+    playAudio();
+
+    return "started";
+  };
+
+  return {
+    audioBuffer,
+    setAudioBuffer,
+    audioSource,
+    audioAnalyser,
+    audioContext,
+    playAudio,
+    stopAudio,
+    togglePlayPause,
+  };
+};
+
+export const useCanvas = () => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  const animationId = useRef<number | null>(null);
+
+  const { elementRef: tBodyRef } = useObserveElementExistence<HTMLTableSectionElement>({
+    appearParams: [getGitHubYearlyContributionsGraphDataTableBody.selectors],
+  });
+
+  const { elementRef: colorLevel0Ref } = useObserveElementExistence<HTMLDivElement>({
+    appearParams: [getGitHubYearlyContributionsGraphLegend.selectors(0)],
+  });
+
+  const { elementRef: colorLevel4Ref } = useObserveElementExistence<HTMLDivElement>({
+    appearParams: [getGitHubYearlyContributionsGraphLegend.selectors(4)],
+  });
+
+  useEffect(() => {
+    // アンマウント時の処理
+    return () => {
+      (async () => {
+        // キャンバスの描画を停止
+        if (animationId.current) {
+          cancelAnimationFrame(animationId.current);
+          animationId.current = null;
+        }
+      })();
+    };
+  }, []);
+
+  const renderFrame = (dataArray: Uint8Array) => {
+    // 処理に必要なリソースが揃っていない場合は処理を終了
+    if (!canvasRef.current || !colorLevel0Ref.current || !colorLevel4Ref.current) return;
+
+    // キャンバスのコンテキストを取得
+    const canvasCtx = canvasRef.current.getContext("2d");
+
+    // キャンバスのコンテキストが取得できない場合は処理を終了
+    if (!canvasCtx) return;
+
+    // キャンバスを初期化
+    canvasCtx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+
+    // キャンバスの背景を塗りつぶす
+    fillContributionGraphBase({
+      canvas: canvasRef.current,
+      canvasCtx,
+      baseCellStyle: getComputedStyle(colorLevel0Ref.current).backgroundColor,
+    });
+
+    // キャンバスに周波数データを描画
+    fillVisualizerCanvas({
+      canvas: canvasRef.current,
+      canvasCtx,
+      dataArray,
+      fillStyle: getComputedStyle(colorLevel4Ref.current).backgroundColor,
+    });
+  };
+
+  const startRenderFrameLoop = (analyser: AnalyserNode) => {
+    if (!tBodyRef.current) return;
+
+    // テーブルのセルを非表示にする
+    applyOverrideStyleToTContributionGraph({ tBody: tBodyRef.current });
+
+    // キャンバスの描画を無限ループで行う処理を開始
+    animationId.current = requestAnimationFrame(function loop() {
+      renderFrame(getFrequencyData(analyser));
+      animationId.current = requestAnimationFrame(loop);
+    });
+  };
+
+  const stopRenderFrameLoop = () => {
     // キャンバスの描画を停止
     if (animationId.current) {
       cancelAnimationFrame(animationId.current);
@@ -342,144 +503,65 @@ export const AudioPlayer = () => {
     // スタイルのオーバーライドを解除
     removeOverrideStyleFromAllElements(OVERRIDE_VISIBILITY_HIDDEN);
     removeOverrideStyleFromAllElements(OVERRIDE_POSITION_RELATIVE);
+  };
+
+  return { canvasRef, renderFrame, animationId, tBodyRef, startRenderFrameLoop, stopRenderFrameLoop };
+};
+
+export const AudioPlayer = () => {
+  const [, reRender] = useReducer((s) => s + 1, 0);
+
+  const { audioBuffer, setAudioBuffer, audioAnalyser, audioContext, stopAudio, togglePlayPause } = useAudio();
+
+  const { canvasRef, tBodyRef, startRenderFrameLoop, stopRenderFrameLoop } = useCanvas();
+
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    // ファイルが選択されていない場合は処理を終了
+    if (!event.target.files || !audioContext.current) return;
+
+    // 選択されたファイルを取得
+    const file = event.target.files[0];
+    if (file) {
+      setAudioBuffer(await getAudioBufferFromAudioFile({ file, audioContext: audioContext.current }));
+    } else {
+      alert("MP3ファイルを選択してください。");
+    }
+  };
+
+  const stop = async () => {
+    stopAudio();
+
+    stopRenderFrameLoop();
 
     reRender();
   };
 
-  const handleAudioFileInputButtonClick = () => {
-    audioFileInputRef.current?.click();
-  };
-
   const handlePlayPuaseToggleButtonClick = async () => {
-    if (audioSource.current) {
-      if (audioContext.current?.state === "running") {
-        await audioContext.current.suspend();
-      } else {
-        await audioContext.current?.resume();
-      }
+    const state = await togglePlayPause();
 
-      reRender();
-    } else {
-      playAudio();
+    if (state === "started") {
+      startRenderFrameLoop(audioAnalyser.current as AnalyserNode);
     }
+
+    reRender();
   };
 
   return (
     <>
-      {audioControlsContainerRef.current &&
-        createPortal(
-          <>
-            {/* biome-ignore lint/style/noImplicitBoolean: <explanation> */}
-            <style jsx>
-              {`
-                [${STYLE_PREFIX}-audio-controls-container] {
-                  font-size: 12px;
-                  padding-top: 4px;
-                  padding-bottom: 4px;
-                  display: flex;
-                  justify-content: center;
-                  align-items: center;
-                  width: 100%;
-                  gap: 8px;
-                }
-
-                [${STYLE_PREFIX}-audio-controls-container] button {
-                  cursor: pointer;
-                  background-color: transparent;
-                  border: solid 1px;
-                  display: flex;
-                  justify-content: center;
-                  align-items: center;
-                  padding: 4px;
-                  border-radius: 0.375rem;
-                  color: var(--fgColor-muted);
-                }
-
-                [${STYLE_PREFIX}-audio-controls-container] button:hover {
-                  color: var(--fgColor-emphasis);
-                }
-
-                [${STYLE_PREFIX}-audio-controls-container] button:disabled {
-                  cursor: not-allowed;
-                  color: var(--fgColor-disabled);
-                }
-
-                [${STYLE_PREFIX}-audio-file-input] {
-                  display: none;
-                }
-
-                [${STYLE_PREFIX}-audio-controls-button-group] {
-                  display: flex;
-                }
-
-                [${STYLE_PREFIX}-audio-controls-button-group] button:not(:last-child) {
-                  border-top-right-radius: 0;
-                  border-bottom-right-radius: 0;
-                  border-right-width: 0.5px;
-                }
-
-                [${STYLE_PREFIX}-audio-controls-button-group] button:last-child {
-                  border-top-left-radius: 0;
-                  border-bottom-left-radius: 0;
-                  border-left-width: 0.5px;
-                }
-              `}
-            </style>
-            <div
-              {...{
-                [`${STYLE_PREFIX}-audio-controls-container`]: "",
-              }}
-            >
-              <button onClick={handleAudioFileInputButtonClick} type="button">
-                <FileMusic size={18} />
-              </button>
-              <input
-                type="file"
-                accept="audio/mpeg"
-                onChange={handleFileChange}
-                ref={audioFileInputRef}
-                {...{
-                  [`${STYLE_PREFIX}-audio-file-input`]: "",
-                }}
-              />
-              <div {...{ [`${STYLE_PREFIX}-audio-controls-button-group`]: "" }}>
-                <button onClick={handlePlayPuaseToggleButtonClick} disabled={!audioBuffer} type="button">
-                  {audioContext.current?.state === "running" ? <Pause size={18} /> : <Play size={18} />}
-                </button>
-                <button onClick={stopAudio} disabled={!audioBuffer} type="button">
-                  <X size={18} />
-                </button>
-              </div>
-            </div>
-          </>,
-          audioControlsContainerRef.current,
-        )}
-      {canvasContainerRef.current &&
-        tBodyRef.current &&
-        createPortal(
-          <>
-            {/* biome-ignore lint/style/noImplicitBoolean: <explanation> */}
-            <style jsx>
-              {`
-                [${STYLE_PREFIX}-audio-visualizer-canvas] {
-                  position: absolute;
-                  top: 0;
-                  left: 0;
-                  visibility: visible;
-                }
-              `}
-            </style>
-            <canvas
-              ref={canvasRef}
-              width={tBodyRef.current.clientWidth - VISUALIZER_SETTINGS.MARGIN_LEFT}
-              height={tBodyRef.current.clientHeight}
-              {...{
-                [`${STYLE_PREFIX}-audio-visualizer-canvas`]: "",
-              }}
-            />
-          </>,
-          canvasContainerRef.current,
-        )}
+      <AudioControlsRenderer
+        audioPlayingState={audioContext.current?.state ?? "suspended"}
+        handleFileChange={handleFileChange}
+        handlePlayPuaseToggleButtonClick={handlePlayPuaseToggleButtonClick}
+        stopAudio={stop}
+        controlsDisabled={!audioBuffer}
+      />
+      {tBodyRef.current && (
+        <VisualizerCanvasRenderer
+          width={tBodyRef.current.clientWidth - VISUALIZER_SETTINGS.MARGIN_LEFT}
+          height={tBodyRef.current.clientHeight}
+          ref={canvasRef}
+        />
+      )}
     </>
   );
 };
