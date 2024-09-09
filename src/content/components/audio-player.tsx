@@ -396,7 +396,6 @@ export const AudioPlayer = () => {
         )}
       {canvasContainerRef.current &&
         tBodyRef.current &&
-        audioContext.current?.state === "running" &&
         createPortal(
           <>
             {/* biome-ignore lint/style/noImplicitBoolean: <explanation> */}
