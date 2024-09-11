@@ -23,11 +23,13 @@ export const overrideStyles = css.global`
 
   [${OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR}] {
     position: relative;
+    pointer-events: none;
   }
 
   /* 再生中だけ表示する */
   [${OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR}] > canvas {
     display: block !important;
+    visibility: visible !important;
   }
 `;
 

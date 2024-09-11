@@ -76,10 +76,9 @@ export const useVisualizer = () => {
     applyOverrideStyle(tBodyRef.current, OVERRIDE_CONTRIB_GRAPH_CELL_AUDIO_PLAYING_STYLE_DATA_ATTR);
 
     // biome-ignore lint/style/noNonNullAssertion: <explanation>
-    const tr = tBodyRef.current.querySelector("tr")!;
+    const visualizerContainer = tBodyRef.current.querySelector<HTMLTableCellElement>("tr > td:nth-child(2)")!;
 
-    // tbodyの最初のtr要素に合わせてcanvasを表示するためのスタイルを適用
-    applyOverrideStyle(tr, OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR);
+    applyOverrideStyle(visualizerContainer, OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR);
 
     // キャンバスの描画を無限ループで行う処理を開始
     animationId.current = requestAnimationFrame(function loop() {
