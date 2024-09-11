@@ -1,20 +1,27 @@
 import css from "styled-jsx/css";
+import { DATA_ATTR_PREFIX } from "../../app/config/constants";
 
-export const STYLE_PREFIX = "data-contributune" as const;
+export const STYLE_DATA_ATTR_PREFIX = `${DATA_ATTR_PREFIX}-style` as const;
 
-const OVERRIDE_STYLE_PREFIX = `${STYLE_PREFIX}-audio-playing-style-override` as const;
+const OVERRIDE_STYLE_DATA_ATTR_PREFIX = `${STYLE_DATA_ATTR_PREFIX}-override` as const;
 
-export const OVERRIDE_VISIBILITY_HIDDEN = `${OVERRIDE_STYLE_PREFIX}-visibility-hidden` as const;
-export const OVERRIDE_POSITION_RELATIVE = `${OVERRIDE_STYLE_PREFIX}-position-relative` as const;
+const OVERRIDE_AUDIO_PLAYING_STYLE_DATA_ATTR_PREFIX = `${OVERRIDE_STYLE_DATA_ATTR_PREFIX}-audio-playing` as const;
 
-export type OverrideStyleKey = typeof OVERRIDE_VISIBILITY_HIDDEN | typeof OVERRIDE_POSITION_RELATIVE;
+export const OVERRIDE_CONTRIB_GRAPH_CELL_AUDIO_PLAYING_STYLE_DATA_ATTR =
+  `${OVERRIDE_AUDIO_PLAYING_STYLE_DATA_ATTR_PREFIX}-contrib-graph-cell` as const;
+export const OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR =
+  `${OVERRIDE_AUDIO_PLAYING_STYLE_DATA_ATTR_PREFIX}-audio-visualizer-container` as const;
+
+export type OverrideStyleKey =
+  | typeof OVERRIDE_CONTRIB_GRAPH_CELL_AUDIO_PLAYING_STYLE_DATA_ATTR
+  | typeof OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR;
 
 export const overrideStyles = css.global`
-  [${OVERRIDE_VISIBILITY_HIDDEN}] {
+  [${OVERRIDE_CONTRIB_GRAPH_CELL_AUDIO_PLAYING_STYLE_DATA_ATTR}] {
     visibility: hidden;
   }
 
-  [${OVERRIDE_POSITION_RELATIVE}] {
+  [${OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR}] {
     position: relative;
   }
 `;

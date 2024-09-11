@@ -3,8 +3,8 @@ import { getContribGraphDataTableBody, getContribGraphLegend } from "../../app/f
 import { getUint8ArrayFromAnalyser } from "../../app/utils/audio";
 import { useObserveElementExistence } from "../../app/utils/use-observe-element-existence";
 import {
-  OVERRIDE_POSITION_RELATIVE,
-  OVERRIDE_VISIBILITY_HIDDEN,
+  OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR,
+  OVERRIDE_CONTRIB_GRAPH_CELL_AUDIO_PLAYING_STYLE_DATA_ATTR,
   applyOverrideStyle,
   removeOverrideStyleFromAllElements,
 } from "../styles";
@@ -79,10 +79,10 @@ export const useVisualizer = () => {
       const tds = trs[i].querySelectorAll("td");
 
       for (let j = 1; j < tds.length; j++) {
-        applyOverrideStyle(tds[j], OVERRIDE_VISIBILITY_HIDDEN);
+        applyOverrideStyle(tds[j], OVERRIDE_CONTRIB_GRAPH_CELL_AUDIO_PLAYING_STYLE_DATA_ATTR);
 
         if (i === 0 && j === 1) {
-          applyOverrideStyle(tds[j], OVERRIDE_POSITION_RELATIVE);
+          applyOverrideStyle(tds[j], OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR);
         }
       }
     }
@@ -105,8 +105,8 @@ export const useVisualizer = () => {
     canvasRef.current?.getContext("2d")?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
     // スタイルのオーバーライドを解除
-    removeOverrideStyleFromAllElements(OVERRIDE_VISIBILITY_HIDDEN);
-    removeOverrideStyleFromAllElements(OVERRIDE_POSITION_RELATIVE);
+    removeOverrideStyleFromAllElements(OVERRIDE_CONTRIB_GRAPH_CELL_AUDIO_PLAYING_STYLE_DATA_ATTR);
+    removeOverrideStyleFromAllElements(OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR);
   };
 
   return { canvasRef, renderFrame, animationId, tBodyRef, startRenderFrameLoop, stopRenderFrameLoop };
