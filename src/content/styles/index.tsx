@@ -23,6 +23,7 @@ export const overrideStyles = css.global`
 
   [${OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR}] {
     position: relative;
+    /* tooltipが表示されないようにするための一時対応 */
     pointer-events: none;
   }
 

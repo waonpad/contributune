@@ -14,6 +14,7 @@ export const Visualizer = forwardRef<HTMLCanvasElement, { width: number; height:
         {...{
           [`${DS}-audio-visualizer-canvas`]: "",
         }}
+        title="Chrome拡張機能 Contributune によってページに挿入された要素です&#10;オーディオの波形を可視化します"
       />
       {/* biome-ignore lint/style/noImplicitBoolean: <explanation> */}
       <style jsx>

@@ -31,7 +31,11 @@ export const AudioControls = ({
           [`${DS}-audio-controls-container`]: "",
         }}
       >
-        <button onClick={handleAudioFileInputButtonClick} type="button">
+        <button
+          onClick={handleAudioFileInputButtonClick}
+          type="button"
+          title="Chrome拡張機能 Contributune によってページに挿入された要素です&#10;ボタンをクリックして、再生したいオーディオファイルを選択します"
+        >
           <FileMusic size={18} />
         </button>
         <input
@@ -44,10 +48,20 @@ export const AudioControls = ({
           }}
         />
         <div {...{ [`${DS}-audio-controls-button-group`]: "" }}>
-          <button onClick={onPlayPauseToggleButtonClick} disabled={controlsDisabled} type="button">
+          <button
+            onClick={onPlayPauseToggleButtonClick}
+            disabled={controlsDisabled}
+            type="button"
+            title="Chrome拡張機能 Contributune によってページに挿入された要素です&#10;オーディオファイルを選択した後、ボタンをクリックして再生または一時停止を行います"
+          >
             {audioPlayingState === "running" ? <Pause size={18} /> : <Play size={18} />}
           </button>
-          <button onClick={onStopButtonClick} disabled={controlsDisabled} type="button">
+          <button
+            onClick={onStopButtonClick}
+            disabled={controlsDisabled}
+            type="button"
+            title="Chrome拡張機能 Contributune によってページに挿入された要素です&#10;ボタンをクリックして、再生中のオーディオを停止します"
+          >
             <X size={18} />
           </button>
         </div>
