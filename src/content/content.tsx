@@ -1,5 +1,5 @@
-import { useObserveElementExistence } from "../app/utils/use-observe-element-existense";
-import { AudioPlayerRenderer } from "./components/audio-player";
+import { useObserveElementExistence } from "../app/utils/use-observe-element-existence";
+import { AudioVisualizerRenderer } from "./components/audio-visualizer";
 import { OverrideStyles } from "./styles";
 
 export const Content = () => {
@@ -12,7 +12,7 @@ export const Content = () => {
   return (
     <>
       <OverrideStyles />
-      <AudioPlayerRenderer />
+      <AudioVisualizerRenderer />
     </>
   );
 };

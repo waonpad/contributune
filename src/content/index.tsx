@@ -1,20 +1,13 @@
 import { createRoot } from "react-dom/client";
-import { Provider } from "react-redux";
-import { proxyStore } from "../app/proxy-store";
 import { Content } from "./content";
 
-proxyStore.ready().then(() => {
-  const root = document.body;
+const root = document.body;
 
-  const extRoot = document.createElement("div");
+const extRoot = document.createElement("div");
 
-  root.appendChild(extRoot);
+extRoot.style.display = "none";
 
-  createRoot(extRoot).render(
-    // <StrictMode>
-    <Provider store={proxyStore}>
-      <Content />
-    </Provider>,
-    // </StrictMode>,
-  );
-});
+root.appendChild(extRoot);
+
+// StrictModeを使用すると上手く動かない (???)
+createRoot(extRoot).render(<Content />);

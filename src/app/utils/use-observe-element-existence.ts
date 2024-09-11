@@ -57,7 +57,7 @@ export const useObserveElementExistence = <T extends Element>({
     waitForElementToAppear();
 
     return () => {
-      ac.abort("アンマウント時のクリーンアップ");
+      ac.abort("Contributune: Known Abort Error");
     };
   }, []);
 

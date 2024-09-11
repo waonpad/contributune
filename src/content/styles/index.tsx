@@ -1,19 +1,36 @@
 import css from "styled-jsx/css";
+import { DATA_ATTR_PREFIX } from "../../app/constants";
 
-const OVERRIDE_STYLES_PREFIX = "data-contributune-audio-playing-style-override" as const;
+export const STYLE_DATA_ATTR_PREFIX = `${DATA_ATTR_PREFIX}-style` as const;
 
-export const OVERRIDE_VISIBLITY_HIDDEN = `${OVERRIDE_STYLES_PREFIX}-visibility-hidden` as const;
-export const OVERRIDE_POSITION_RELATIVE = `${OVERRIDE_STYLES_PREFIX}-position-relative` as const;
+const OVERRIDE_STYLE_DATA_ATTR_PREFIX = `${STYLE_DATA_ATTR_PREFIX}-override` as const;
 
-export type OverrideStyleKey = typeof OVERRIDE_VISIBLITY_HIDDEN | typeof OVERRIDE_POSITION_RELATIVE;
+const OVERRIDE_AUDIO_PLAYING_STYLE_DATA_ATTR_PREFIX = `${OVERRIDE_STYLE_DATA_ATTR_PREFIX}-audio-playing` as const;
+
+export const OVERRIDE_CONTRIB_GRAPH_CELL_AUDIO_PLAYING_STYLE_DATA_ATTR =
+  `${OVERRIDE_AUDIO_PLAYING_STYLE_DATA_ATTR_PREFIX}-contrib-graph-cell` as const;
+export const OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR =
+  `${OVERRIDE_AUDIO_PLAYING_STYLE_DATA_ATTR_PREFIX}-audio-visualizer-container` as const;
+
+export type OverrideStyleKey =
+  | typeof OVERRIDE_CONTRIB_GRAPH_CELL_AUDIO_PLAYING_STYLE_DATA_ATTR
+  | typeof OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR;
 
 export const overrideStyles = css.global`
-  [${OVERRIDE_VISIBLITY_HIDDEN}] {
+  [${OVERRIDE_CONTRIB_GRAPH_CELL_AUDIO_PLAYING_STYLE_DATA_ATTR}] > tr > td:not(:first-child) {
     visibility: hidden;
   }
 
-  [${OVERRIDE_POSITION_RELATIVE}] {
+  [${OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR}] {
     position: relative;
+    /* tooltipが表示されないようにするための一時対応 */
+    pointer-events: none;
+  }
+
+  /* 再生中だけ表示する */
+  [${OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR}] > canvas {
+    display: block !important;
+    visibility: visible !important;
   }
 `;
 
