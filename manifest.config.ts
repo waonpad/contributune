@@ -5,15 +5,14 @@ import { version } from "./package.json";
 // vite root folder: src, public folder: public (based on the project root)
 // @see ../vite.config.ts#L16
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const manifest = defineManifest(async (_env) => ({
   manifest_version: 3,
   name: "Contributune",
   description: "GitHubの草を音声波形にして音楽を再生するChrome拡張機能",
   version,
-  background: {
-    service_worker: "service-worker/index.ts",
-  },
+  // background: {
+  //   service_worker: "service-worker/index.ts",
+  // },
   content_scripts: [
     {
       matches: ["https://github.com/*"],

@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Content } from "./content";
 
@@ -6,10 +5,9 @@ const root = document.body;
 
 const extRoot = document.createElement("div");
 
+extRoot.style.display = "none";
+
 root.appendChild(extRoot);
 
-createRoot(extRoot).render(
-  <StrictMode>
-    <Content />,
-  </StrictMode>,
-);
+// StrictModeを使用すると上手く動かない (???)
+createRoot(extRoot).render(<Content />);
