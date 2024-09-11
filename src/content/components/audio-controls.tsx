@@ -3,7 +3,7 @@ import { type ChangeEvent, useRef } from "react";
 import { createPortal } from "react-dom";
 import { getContribGraphDataContainer } from "../../app/features/github/utils/element-getters";
 import { useObserveElementExistence } from "../../app/utils/use-observe-element-existence";
-import { STYLE_DATA_ATTR_PREFIX } from "../styles";
+import { STYLE_DATA_ATTR_PREFIX as DS } from "../styles";
 
 export const AudioControls = ({
   audioPlayingState,
@@ -28,7 +28,7 @@ export const AudioControls = ({
     <>
       <div
         {...{
-          [`${STYLE_DATA_ATTR_PREFIX}-audio-controls-container`]: "",
+          [`${DS}-audio-controls-container`]: "",
         }}
       >
         <button onClick={handleAudioFileInputButtonClick} type="button">
@@ -40,10 +40,10 @@ export const AudioControls = ({
           onChange={onFileChange}
           ref={audioFileInputRef}
           {...{
-            [`${STYLE_DATA_ATTR_PREFIX}-audio-file-input`]: "",
+            [`${DS}-audio-file-input`]: "",
           }}
         />
-        <div {...{ [`${STYLE_DATA_ATTR_PREFIX}-audio-controls-button-group`]: "" }}>
+        <div {...{ [`${DS}-audio-controls-button-group`]: "" }}>
           <button onClick={onPlayPauseToggleButtonClick} disabled={controlsDisabled} type="button">
             {audioPlayingState === "running" ? <Pause size={18} /> : <Play size={18} />}
           </button>
@@ -55,7 +55,7 @@ export const AudioControls = ({
       {/* biome-ignore lint/style/noImplicitBoolean: <explanation> */}
       <style jsx>
         {`
-      [${STYLE_DATA_ATTR_PREFIX}-audio-controls-container] {
+      [${DS}-audio-controls-container] {
         font-size: 12px;
         padding-top: 4px;
         padding-bottom: 4px;
@@ -66,7 +66,7 @@ export const AudioControls = ({
         gap: 8px;
       }
 
-      [${STYLE_DATA_ATTR_PREFIX}-audio-controls-container] button {
+      [${DS}-audio-controls-container] button {
         cursor: pointer;
         background-color: transparent;
         border: solid 1px;
@@ -78,30 +78,30 @@ export const AudioControls = ({
         color: var(--fgColor-muted);
       }
 
-      [${STYLE_DATA_ATTR_PREFIX}-audio-controls-container] button:hover {
+      [${DS}-audio-controls-container] button:hover {
         color: var(--fgColor-emphasis);
       }
 
-      [${STYLE_DATA_ATTR_PREFIX}-audio-controls-container] button:disabled {
+      [${DS}-audio-controls-container] button:disabled {
         cursor: not-allowed;
         color: var(--fgColor-disabled);
       }
 
-      [${STYLE_DATA_ATTR_PREFIX}-audio-file-input] {
+      [${DS}-audio-file-input] {
         display: none;
       }
 
-      [${STYLE_DATA_ATTR_PREFIX}-audio-controls-button-group] {
+      [${DS}-audio-controls-button-group] {
         display: flex;
       }
 
-      [${STYLE_DATA_ATTR_PREFIX}-audio-controls-button-group] button:not(:last-child) {
+      [${DS}-audio-controls-button-group] button:not(:last-child) {
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
         border-right-width: 0.5px;
       }
 
-      [${STYLE_DATA_ATTR_PREFIX}-audio-controls-button-group] button:last-child {
+      [${DS}-audio-controls-button-group] button:last-child {
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
         border-left-width: 0.5px;
