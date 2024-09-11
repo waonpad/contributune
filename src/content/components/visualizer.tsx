@@ -22,9 +22,9 @@ export const Visualizer = forwardRef<HTMLCanvasElement, { width: number; height:
         [${DS}-audio-visualizer-canvas] {
           position: absolute;
           top: 0;
-          {/* 曜日が表示されているtdのぶんずらす */}
+          // 曜日が表示されているtdのぶんずらす
           left: ${VISUALIZER_SETTINGS.MARGIN_LEFT}px;
-          {/* 再生中だけ表示するよう別の場所から上書きする */}
+          // 再生中だけ表示するよう別の場所から上書きする
           display: none;
         }
       `}
