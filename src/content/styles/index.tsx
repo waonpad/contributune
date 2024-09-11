@@ -17,12 +17,17 @@ export type OverrideStyleKey =
   | typeof OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR;
 
 export const overrideStyles = css.global`
-  [${OVERRIDE_CONTRIB_GRAPH_CELL_AUDIO_PLAYING_STYLE_DATA_ATTR}] {
+  [${OVERRIDE_CONTRIB_GRAPH_CELL_AUDIO_PLAYING_STYLE_DATA_ATTR}] > tr > td:not(:first-child) {
     visibility: hidden;
   }
 
   [${OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR}] {
     position: relative;
+  }
+
+  /* 再生中だけ表示する */
+  [${OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR}] > canvas {
+    display: block !important;
   }
 `;
 

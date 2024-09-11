@@ -22,7 +22,10 @@ export const Visualizer = forwardRef<HTMLCanvasElement, { width: number; height:
         [${DS}-audio-visualizer-canvas] {
           position: absolute;
           top: 0;
+          {/* 曜日が表示されているtdのぶんずらす */}
           left: ${VISUALIZER_SETTINGS.MARGIN_LEFT}px;
+          {/* 再生中だけ表示するよう別の場所から上書きする */}
+          display: none;
         }
       `}
       </style>
@@ -32,6 +35,7 @@ export const Visualizer = forwardRef<HTMLCanvasElement, { width: number; height:
 
 export const VisualizerRenderer = forwardRef<HTMLCanvasElement, { width: number; height: number }>((props, ref) => {
   const { elementRef: containerRef } = useObserveElementExistence({
+    // 再生前にcreatePortalを実行可能にする
     appearParams: [`${getContribGraphDataTableBody.selectors} > tr`],
   });
 
