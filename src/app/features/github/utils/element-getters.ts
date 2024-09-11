@@ -1,58 +1,55 @@
-export const getContribsContainer = {
+export const getContribContainer = {
   selectors: ".js-yearly-contributions",
   node: () => document,
-  exec: () => getContribsContainer.node().querySelector<HTMLDivElement>(getContribsContainer.selectors),
+  exec: () => getContribContainer.node().querySelector<HTMLDivElement>(getContribContainer.selectors),
 } as const;
 
-export const getContribsMainContainer = {
+export const getContribMainContainer = {
   selectors: ".js-yearly-contributions > div",
   node: () => document,
-  exec: () => getContribsMainContainer.node().querySelector<HTMLDivElement>(getContribsMainContainer.selectors),
+  exec: () => getContribMainContainer.node().querySelector<HTMLDivElement>(getContribMainContainer.selectors),
 } as const;
 
-export const getContribsGraphContainer = {
+export const getContribGraphContainer = {
   selectors: ".js-yearly-contributions > div > .graph-before-activity-overview",
   node: () => document,
-  exec: () => getContribsGraphContainer.node().querySelector<HTMLDivElement>(getContribsGraphContainer.selectors),
+  exec: () => getContribGraphContainer.node().querySelector<HTMLDivElement>(getContribGraphContainer.selectors),
 } as const;
 
-export const getContribsGraphDataContainer = {
+export const getContribGraphDataContainer = {
   selectors: ".js-yearly-contributions > div > .graph-before-activity-overview > div[data-graph-url]",
   node: () => document,
-  exec: () =>
-    getContribsGraphDataContainer.node().querySelector<HTMLDivElement>(getContribsGraphDataContainer.selectors),
+  exec: () => getContribGraphDataContainer.node().querySelector<HTMLDivElement>(getContribGraphDataContainer.selectors),
 } as const;
 
-export const getContribsGraphDataScrollableContainer = {
+export const getContribGraphDataScrollableContainer = {
   selectors: ".js-yearly-contributions > div > .graph-before-activity-overview > div[data-graph-url] > div",
   node: () => document,
   exec: () =>
-    getContribsGraphDataScrollableContainer
+    getContribGraphDataScrollableContainer
       .node()
-      .querySelector<HTMLDivElement>(getContribsGraphDataScrollableContainer.selectors),
+      .querySelector<HTMLDivElement>(getContribGraphDataScrollableContainer.selectors),
 } as const;
 
-export const getContribsGraphDataTable = {
+export const getContribGraphDataTable = {
   selectors: ".js-yearly-contributions > div > .graph-before-activity-overview > div[data-graph-url] > div > table",
   node: () => document,
-  exec: () => getContribsGraphDataTable.node().querySelector<HTMLTableElement>(getContribsGraphDataTable.selectors),
+  exec: () => getContribGraphDataTable.node().querySelector<HTMLTableElement>(getContribGraphDataTable.selectors),
 } as const;
 
-export const getContribsGraphDataTableBody = {
+export const getContribGraphDataTableBody = {
   selectors:
     ".js-yearly-contributions > div > .graph-before-activity-overview > div[data-graph-url] > div > table > tbody",
   node: () => document,
   exec: () =>
-    getContribsGraphDataTableBody
-      .node()
-      .querySelector<HTMLTableSectionElement>(getContribsGraphDataTableBody.selectors),
+    getContribGraphDataTableBody.node().querySelector<HTMLTableSectionElement>(getContribGraphDataTableBody.selectors),
 } as const;
 
-export type ContribsGraphLegendLevel = 0 | 1 | 2 | 3 | 4;
+export type ContribGraphLegendLevel = 0 | 1 | 2 | 3 | 4;
 
-export const getContribsGraphLegend = {
-  selectors: (level: ContribsGraphLegendLevel) => `#contribution-graph-legend-level-${level}` as const,
+export const getContribGraphLegend = {
+  selectors: (level: ContribGraphLegendLevel) => `#contribution-graph-legend-level-${level}` as const,
   node: () => document,
-  exec: (level: ContribsGraphLegendLevel) =>
-    getContribsGraphLegend.node().querySelector<HTMLDivElement>(getContribsGraphLegend.selectors(level)),
+  exec: (level: ContribGraphLegendLevel) =>
+    getContribGraphLegend.node().querySelector<HTMLDivElement>(getContribGraphLegend.selectors(level)),
 } as const;

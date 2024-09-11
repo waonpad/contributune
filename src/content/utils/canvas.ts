@@ -1,7 +1,7 @@
 import { createRoundRectPath } from "../../app/utils/canvas";
 import { VISUALIZER_SETTINGS } from "../constants";
 
-export const fillCanvasLikeContribsGraphBg = ({
+export const fillCanvasLikeContribGraphBg = ({
   canvas,
   canvasCtx,
   fillStyle,
@@ -29,7 +29,7 @@ export const fillCanvasLikeContribsGraphBg = ({
   }
 };
 
-export const fillCanvasLikeContribsGraphAsVisuarizer = ({
+export const fillCanvasLikeContribGraphAsVisuarizer = ({
   canvas,
   canvasCtx,
   dataArray,

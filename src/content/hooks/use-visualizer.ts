@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { getContribsGraphDataTableBody, getContribsGraphLegend } from "../../app/features/github/utils/element-getters";
+import { getContribGraphDataTableBody, getContribGraphLegend } from "../../app/features/github/utils/element-getters";
 import { getUint8ArrayFromAnalyser } from "../../app/utils/audio";
 import { useObserveElementExistence } from "../../app/utils/use-observe-element-existence";
 import {
@@ -8,7 +8,7 @@ import {
   applyOverrideStyle,
   removeOverrideStyleFromAllElements,
 } from "../styles";
-import { fillCanvasLikeContribsGraphAsVisuarizer, fillCanvasLikeContribsGraphBg } from "../utils/canvas";
+import { fillCanvasLikeContribGraphAsVisuarizer, fillCanvasLikeContribGraphBg } from "../utils/canvas";
 
 export const useVisualizer = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -16,15 +16,15 @@ export const useVisualizer = () => {
   const animationId = useRef<number | null>(null);
 
   const { elementRef: tBodyRef } = useObserveElementExistence<HTMLTableSectionElement>({
-    appearParams: [getContribsGraphDataTableBody.selectors],
+    appearParams: [getContribGraphDataTableBody.selectors],
   });
 
   const { elementRef: colorLevel0Ref } = useObserveElementExistence<HTMLDivElement>({
-    appearParams: [getContribsGraphLegend.selectors(0)],
+    appearParams: [getContribGraphLegend.selectors(0)],
   });
 
   const { elementRef: colorLevel4Ref } = useObserveElementExistence<HTMLDivElement>({
-    appearParams: [getContribsGraphLegend.selectors(4)],
+    appearParams: [getContribGraphLegend.selectors(4)],
   });
 
   useEffect(() => {
@@ -54,14 +54,14 @@ export const useVisualizer = () => {
     canvasCtx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
     // キャンバスの背景を塗りつぶす
-    fillCanvasLikeContribsGraphBg({
+    fillCanvasLikeContribGraphBg({
       canvas: canvasRef.current,
       canvasCtx,
       fillStyle: getComputedStyle(colorLevel0Ref.current).backgroundColor,
     });
 
     // キャンバスに周波数データを描画
-    fillCanvasLikeContribsGraphAsVisuarizer({
+    fillCanvasLikeContribGraphAsVisuarizer({
       canvas: canvasRef.current,
       canvasCtx,
       dataArray,

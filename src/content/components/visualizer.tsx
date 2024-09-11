@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { createPortal } from "react-dom";
-import { getContribsGraphDataTableBody } from "../../app/features/github/utils/element-getters";
+import { getContribGraphDataTableBody } from "../../app/features/github/utils/element-getters";
 import { useObserveElementExistence } from "../../app/utils/use-observe-element-existence";
 import { STYLE_PREFIX } from "../styles";
 
@@ -32,7 +32,7 @@ export const Visualizer = forwardRef<HTMLCanvasElement, { width: number; height:
 
 export const VisualizerRenderer = forwardRef<HTMLCanvasElement, { width: number; height: number }>((props, ref) => {
   const { elementRef: containerRef } = useObserveElementExistence({
-    appearParams: [`${getContribsGraphDataTableBody.selectors} > tr > td:nth-of-type(2)`],
+    appearParams: [`${getContribGraphDataTableBody.selectors} > tr > td:nth-of-type(2)`],
   });
 
   if (!containerRef.current) return null;
