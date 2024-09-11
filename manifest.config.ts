@@ -19,7 +19,7 @@ const manifest = defineManifest(async (_env) => ({
       js: ["content/index.tsx"],
     },
   ],
-  host_permissions: ["<all_urls>"],
+  host_permissions: ["https://github.com/*"],
   // options_ui: {
   //   page: "options/options.html",
   //   open_in_tab: true,
