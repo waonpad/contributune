@@ -16,41 +16,43 @@ const manifest = defineManifest(async (_env) => ({
   },
   content_scripts: [
     {
-      // ここではglobは使えない
       matches: ["https://github.com/*"],
       js: ["content/index.tsx"],
     },
   ],
   host_permissions: ["<all_urls>"],
-  options_ui: {
-    page: "options/options.html",
-    open_in_tab: true,
-  },
-  web_accessible_resources: [
-    {
-      resources: [
-        // this file is web accessible; it supports HMR b/c it's declared in `rollupOptions.input`
-        "welcome/welcome.html",
-      ],
-      matches: ["<all_urls>"],
-    },
-  ],
-  action: {
-    default_popup: "popup/popup.html",
-    default_icon: {
-      "16": "images/extension-16.png",
-      "32": "images/extension-32.png",
-      "48": "images/extension-48.png",
-      "128": "images/extension-128.png",
-    },
-  },
+  // options_ui: {
+  //   page: "options/options.html",
+  //   open_in_tab: true,
+  // },
+  // web_accessible_resources: [
+  //   {
+  //     resources: [
+  //       // this file is web accessible; it supports HMR b/c it's declared in `rollupOptions.input`
+  //       "welcome/welcome.html",
+  //     ],
+  //     matches: ["<all_urls>"],
+  //   },
+  // ],
+  // action: {
+  //   default_popup: "popup/popup.html",
+  //   default_icon: {
+  //     "16": "images/extension-16.png",
+  //     "32": "images/extension-32.png",
+  //     "48": "images/extension-48.png",
+  //     "128": "images/extension-128.png",
+  //   },
+  // },
   icons: {
     "16": "images/extension-16.png",
     "32": "images/extension-32.png",
     "48": "images/extension-48.png",
     "128": "images/extension-128.png",
   },
-  permissions: ["storage", "tabs"],
+  permissions: [
+    // "storage",
+    // "tabs",
+  ],
 }));
 
 export default manifest;

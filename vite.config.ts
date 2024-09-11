@@ -1,4 +1,4 @@
-import { join, resolve } from "node:path";
+import { resolve } from "node:path";
 import { crx } from "@crxjs/vite-plugin";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
@@ -21,7 +21,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         // see web_accessible_resources in the manifest config
-        welcome: join(__dirname, "src/welcome/welcome.html"),
+        // welcome: join(__dirname, "src/welcome/welcome.html"),
       },
       output: {
         chunkFileNames: "assets/chunk-[hash].js",
