@@ -2,6 +2,7 @@ import { forwardRef } from "react";
 import { createPortal } from "react-dom";
 import { getContribGraphDataTableBody } from "../../app/features/github/utils/element-getters";
 import { useObserveElementExistence } from "../../app/utils/use-observe-element-existence";
+import { VISUALIZER_SETTINGS } from "../constants";
 import { STYLE_DATA_ATTR_PREFIX as DS } from "../styles";
 
 export const Visualizer = forwardRef<HTMLCanvasElement, { width: number; height: number }>(({ width, height }, ref) => {
@@ -21,8 +22,7 @@ export const Visualizer = forwardRef<HTMLCanvasElement, { width: number; height:
         [${DS}-audio-visualizer-canvas] {
           position: absolute;
           top: 0;
-          left: 0;
-          visibility: visible;
+          left: ${VISUALIZER_SETTINGS.MARGIN_LEFT}px;
         }
       `}
       </style>
@@ -32,7 +32,7 @@ export const Visualizer = forwardRef<HTMLCanvasElement, { width: number; height:
 
 export const VisualizerRenderer = forwardRef<HTMLCanvasElement, { width: number; height: number }>((props, ref) => {
   const { elementRef: containerRef } = useObserveElementExistence({
-    appearParams: [`${getContribGraphDataTableBody.selectors} > tr > td:nth-of-type(2)`],
+    appearParams: [`${getContribGraphDataTableBody.selectors} > tr`],
   });
 
   if (!containerRef.current) return null;

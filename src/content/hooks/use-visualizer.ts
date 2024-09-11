@@ -78,14 +78,14 @@ export const useVisualizer = () => {
     for (let i = 0; i < trs.length; i++) {
       const tds = trs[i].querySelectorAll("td");
 
+      // 全てのセルを非表示にする
       for (let j = 1; j < tds.length; j++) {
         applyOverrideStyle(tds[j], OVERRIDE_CONTRIB_GRAPH_CELL_AUDIO_PLAYING_STYLE_DATA_ATTR);
-
-        if (i === 0 && j === 1) {
-          applyOverrideStyle(tds[j], OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR);
-        }
       }
     }
+
+    // tbodyの最初のtr要素に合わせてcanvasを表示するためのスタイルを適用
+    applyOverrideStyle(trs[0], OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR);
 
     // キャンバスの描画を無限ループで行う処理を開始
     animationId.current = requestAnimationFrame(function loop() {
