@@ -37,7 +37,7 @@ export const AudioVisualizer = () => {
     reRender();
   };
 
-  const handlePlayPuaseToggleButtonClick = async () => {
+  const handlePlayPauseToggleButtonClick = async () => {
     const state = await togglePlayPause();
 
     if (state === "started") {
@@ -52,7 +52,7 @@ export const AudioVisualizer = () => {
       <AudioControlsRenderer
         audioPlayingState={audioCtx.current?.state ?? "suspended"}
         onFileChange={handleFileChange}
-        onPlayPuaseToggleButtonClick={handlePlayPuaseToggleButtonClick}
+        onPlayPauseToggleButtonClick={handlePlayPauseToggleButtonClick}
         onStopButtonClick={handleStopButtonClick}
         controlsDisabled={!audioBuffer}
       />

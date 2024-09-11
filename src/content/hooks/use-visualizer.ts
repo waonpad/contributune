@@ -8,7 +8,7 @@ import {
   applyOverrideStyle,
   removeOverrideStyleFromAllElements,
 } from "../styles";
-import { fillCanvasLikeContribGraphAsVisuarizer, fillCanvasLikeContribGraphBg } from "../utils/canvas";
+import { fillCanvasLikeContribGraphAsVisualizer, fillCanvasLikeContribGraphBg } from "../utils/canvas";
 
 export const useVisualizer = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -61,7 +61,7 @@ export const useVisualizer = () => {
     });
 
     // キャンバスに周波数データを描画
-    fillCanvasLikeContribGraphAsVisuarizer({
+    fillCanvasLikeContribGraphAsVisualizer({
       canvas: canvasRef.current,
       canvasCtx,
       dataArray,

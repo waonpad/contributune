@@ -13,14 +13,14 @@ export const fillCanvasLikeContribGraphBg = ({
   canvasCtx.fillStyle = fillStyle;
 
   // キャンバス全体に10x10の角丸四角形を3pxずつスペースをあけて描画
-  for (let y = 0; y < canvas.height; y += VISUALIZER_SETTINGS.CELL_HEIT + VISUALIZER_SETTINGS.CELL_SPACING) {
+  for (let y = 0; y < canvas.height; y += VISUALIZER_SETTINGS.CELL_HEIGHT + VISUALIZER_SETTINGS.CELL_SPACING) {
     for (let x = 0; x < canvas.width; x += VISUALIZER_SETTINGS.CELL_WIDTH + VISUALIZER_SETTINGS.CELL_SPACING) {
       createRoundRectPath({
         ctx: canvasCtx,
         x,
         y,
         w: VISUALIZER_SETTINGS.CELL_WIDTH,
-        h: VISUALIZER_SETTINGS.CELL_HEIT,
+        h: VISUALIZER_SETTINGS.CELL_HEIGHT,
         r: VISUALIZER_SETTINGS.CELL_RADIUS,
       });
 
@@ -29,7 +29,7 @@ export const fillCanvasLikeContribGraphBg = ({
   }
 };
 
-export const fillCanvasLikeContribGraphAsVisuarizer = ({
+export const fillCanvasLikeContribGraphAsVisualizer = ({
   canvas,
   canvasCtx,
   dataArray,
@@ -52,9 +52,9 @@ export const fillCanvasLikeContribGraphAsVisuarizer = ({
     // barHeight以下の間、縦に3pxずつスペースをあけて下から上に描画
     while (processedBarHeight < barHeight) {
       const currentBlockHeight =
-        barHeight - processedBarHeight < VISUALIZER_SETTINGS.CELL_HEIT
+        barHeight - processedBarHeight < VISUALIZER_SETTINGS.CELL_HEIGHT
           ? barHeight - processedBarHeight
-          : VISUALIZER_SETTINGS.CELL_HEIT;
+          : VISUALIZER_SETTINGS.CELL_HEIGHT;
 
       const currentRadius =
         currentBlockHeight < VISUALIZER_SETTINGS.CELL_RADIUS ? currentBlockHeight / 2 : VISUALIZER_SETTINGS.CELL_RADIUS;

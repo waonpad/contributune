@@ -8,13 +8,13 @@ import { STYLE_PREFIX } from "../styles";
 export const AudioControls = ({
   audioPlayingState,
   onFileChange,
-  onPlayPuaseToggleButtonClick,
+  onPlayPauseToggleButtonClick,
   onStopButtonClick,
   controlsDisabled,
 }: {
   audioPlayingState: (typeof AudioContext)["prototype"]["state"];
   onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  onPlayPuaseToggleButtonClick: () => void;
+  onPlayPauseToggleButtonClick: () => void;
   onStopButtonClick: () => void;
   controlsDisabled: boolean;
 }) => {
@@ -44,7 +44,7 @@ export const AudioControls = ({
           }}
         />
         <div {...{ [`${STYLE_PREFIX}-audio-controls-button-group`]: "" }}>
-          <button onClick={onPlayPuaseToggleButtonClick} disabled={controlsDisabled} type="button">
+          <button onClick={onPlayPauseToggleButtonClick} disabled={controlsDisabled} type="button">
             {audioPlayingState === "running" ? <Pause size={18} /> : <Play size={18} />}
           </button>
           <button onClick={onStopButtonClick} disabled={controlsDisabled} type="button">
