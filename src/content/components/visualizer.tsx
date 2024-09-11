@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import { createPortal } from "react-dom";
 import { getContribsGraphDataTableBody } from "../../app/features/github/utils/element-getters";
-import { useObserveElementExistence } from "../../app/utils/use-observe-element-existense";
+import { useObserveElementExistence } from "../../app/utils/use-observe-element-existence";
 import { STYLE_PREFIX } from "../styles";
 
 export const Visualizer = forwardRef<HTMLCanvasElement, { width: number; height: number }>(({ width, height }, ref) => {

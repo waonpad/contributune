@@ -2,7 +2,7 @@ import { FileMusic, Pause, Play, X } from "lucide-react";
 import { type ChangeEvent, useRef } from "react";
 import { createPortal } from "react-dom";
 import { getContribsGraphDataContainer } from "../../app/features/github/utils/element-getters";
-import { useObserveElementExistence } from "../../app/utils/use-observe-element-existense";
+import { useObserveElementExistence } from "../../app/utils/use-observe-element-existence";
 import { STYLE_PREFIX } from "../styles";
 
 export const AudioControls = ({

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { getContribsGraphDataTableBody, getContribsGraphLegend } from "../../app/features/github/utils/element-getters";
 import { getUint8ArrayFromAnalyser } from "../../app/utils/audio";
-import { useObserveElementExistence } from "../../app/utils/use-observe-element-existense";
+import { useObserveElementExistence } from "../../app/utils/use-observe-element-existence";
 import {
   OVERRIDE_POSITION_RELATIVE,
   OVERRIDE_VISIBILITY_HIDDEN,

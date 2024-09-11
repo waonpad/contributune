@@ -2,7 +2,7 @@ import { type ChangeEvent, useReducer } from "react";
 import { createPortal } from "react-dom";
 import { getContribsContainer } from "../../app/features/github/utils/element-getters";
 import { getAudioBufferFromAudioFile } from "../../app/utils/audio";
-import { useObserveElementExistence } from "../../app/utils/use-observe-element-existense";
+import { useObserveElementExistence } from "../../app/utils/use-observe-element-existence";
 import { VISUALIZER_SETTINGS } from "../constants";
 import { useAudio } from "../hooks/use-audio";
 import { useVisualizer } from "../hooks/use-visualizer";
