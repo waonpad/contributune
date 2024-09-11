@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { createPortal } from "react-dom";
-import { getContribGraphDataTableBody } from "../../app/features/github/utils/element-getters";
+import { getContribGraphDataTableBody } from "../../app/utils/github/element-getters";
 import { useObserveElementExistence } from "../../app/utils/use-observe-element-existence";
 import { VISUALIZER_SETTINGS } from "../constants";
 import { STYLE_DATA_ATTR_PREFIX as DS } from "../styles";

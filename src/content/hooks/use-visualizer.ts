@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import { getContribGraphDataTableBody, getContribGraphLegend } from "../../app/features/github/utils/element-getters";
 import { getUint8ArrayFromAnalyser } from "../../app/utils/audio";
+import { getContribGraphDataTableBody, getContribGraphLegend } from "../../app/utils/github/element-getters";
 import { useObserveElementExistence } from "../../app/utils/use-observe-element-existence";
 import {
   OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR,
