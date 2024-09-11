@@ -27,6 +27,7 @@
     "@crxjs/vite-plugin": "^2.0.0-beta.23",
     "@types/chrome": "^0.0.270",
     "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
     "@vitejs/plugin-react": "^4.2.1",
     "lefthook": "^1.7.15",
     "npm-run-all": "^4.1.5",
