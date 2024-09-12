@@ -1,8 +1,8 @@
+import { getAudioBufferFromAudioFile } from "@/app/utils/audio";
+import { getContribContainer } from "@/app/utils/github/element-getters";
+import { useObserveElementExistence } from "@/app/utils/use-observe-element-existence";
 import { type ChangeEvent, useReducer } from "react";
 import { createPortal } from "react-dom";
-import { getAudioBufferFromAudioFile } from "../../app/utils/audio";
-import { getContribContainer } from "../../app/utils/github/element-getters";
-import { useObserveElementExistence } from "../../app/utils/use-observe-element-existence";
 import { VISUALIZER_SETTINGS } from "../constants";
 import { useAudio } from "../hooks/use-audio";
 import { useVisualizer } from "../hooks/use-visualizer";

@@ -1,7 +1,7 @@
+import { getUint8ArrayFromAnalyser } from "@/app/utils/audio";
+import { getContribGraphDataTableBody, getContribGraphLegend } from "@/app/utils/github/element-getters";
+import { useObserveElementExistence } from "@/app/utils/use-observe-element-existence";
 import { useEffect, useRef } from "react";
-import { getUint8ArrayFromAnalyser } from "../../app/utils/audio";
-import { getContribGraphDataTableBody, getContribGraphLegend } from "../../app/utils/github/element-getters";
-import { useObserveElementExistence } from "../../app/utils/use-observe-element-existence";
 import {
   OVERRIDE_AUDIO_VISUALIZER_CONTAINER_AUDIO_PLAYING_STYLE_DATA_ATTR,
   OVERRIDE_CONTRIB_GRAPH_CELL_AUDIO_PLAYING_STYLE_DATA_ATTR,

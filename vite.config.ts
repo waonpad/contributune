@@ -13,8 +13,6 @@ export default defineConfig({
       port: 5173,
     },
   },
-  // prevent src/ prefix on extension urls
-  root: resolve(__dirname, "src"),
   publicDir: resolve(__dirname, "public"),
   build: {
     outDir: resolve(__dirname, "dist"),
@@ -26,6 +24,11 @@ export default defineConfig({
       output: {
         chunkFileNames: "assets/chunk-[hash].js",
       },
+    },
+  },
+  resolve: {
+    alias: {
+      "@": resolve(__dirname, "/src"),
     },
   },
   plugins: [

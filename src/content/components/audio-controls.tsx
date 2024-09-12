@@ -1,8 +1,8 @@
+import { getContribGraphDataContainer } from "@/app/utils/github/element-getters";
+import { useObserveElementExistence } from "@/app/utils/use-observe-element-existence";
 import { FileMusic, Pause, Play, X } from "lucide-react";
 import { type ChangeEvent, useRef } from "react";
 import { createPortal } from "react-dom";
-import { getContribGraphDataContainer } from "../../app/utils/github/element-getters";
-import { useObserveElementExistence } from "../../app/utils/use-observe-element-existence";
 import { STYLE_DATA_ATTR_PREFIX as DS } from "../styles";
 
 export const AudioControls = ({

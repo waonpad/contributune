@@ -1,5 +1,5 @@
+import { DATA_ATTR_PREFIX } from "@/app/constants";
 import css from "styled-jsx/css";
-import { DATA_ATTR_PREFIX } from "../../app/constants";
 
 export const STYLE_DATA_ATTR_PREFIX = `${DATA_ATTR_PREFIX}-style` as const;
 
