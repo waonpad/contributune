@@ -1,5 +1,8 @@
 /**
  * 角が丸い四角形のパスを作成する
+ *
+ * 描画はこの関数では行わない \
+ * `CanvasRenderingContext2D.stroke()` や `CanvasRenderingContext2D.fill()` などで描画する
  */
 export const createRoundRectPath = ({
   ctx,
