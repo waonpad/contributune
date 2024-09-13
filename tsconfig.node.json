@@ -6,6 +6,8 @@
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "strict": true,
+    "typeRoots": ["./node_modules"],
+    "types": ["@vitest/browser/providers/playwright"]
   },
   "include": ["vite.config.ts", "./manifest.config.ts"]
 }
