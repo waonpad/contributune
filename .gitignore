@@ -33,3 +33,6 @@ dist-firefox-v2
 .env.production.local
 
 *.zip
+
+# テスト時にスクリーンショットが保存されるディレクトリ
+**/__screenshots__/

@@ -1,8 +1,8 @@
 import { resolve } from "node:path";
 import { crx } from "@crxjs/vite-plugin";
 import react from "@vitejs/plugin-react";
-import { type UserConfig, defineConfig } from "vite";
-import type { UserConfig as VitestUserConfig } from "vitest/dist/config.js";
+import { defineConfig } from "vite";
+import arraybuffer from "vite-plugin-arraybuffer";
 import manifest from "./manifest.config";
 
 export default defineConfig({
@@ -39,22 +39,6 @@ export default defineConfig({
       },
     }),
     crx({ manifest }),
+    arraybuffer(),
   ],
-  test: {
-    /**
-     * グローバルを許可する場合、tsconfig.jsonに以下を追加
-     * {
-     *  "compilerOptions": {
-     *    ...
-     *    "types": ["vitest/globals"]
-     * }
-     */
-    globals: false,
-    environment: "happy-dom",
-    include: ["src/**/*.test.{js,ts,jsx,tsx}"],
-    alias: {
-      "@": resolve(__dirname, "./src"),
-    },
-    setupFiles: ["./src/setup-tests.ts"],
-  },
-} as UserConfig & { test: VitestUserConfig["test"] });
+});

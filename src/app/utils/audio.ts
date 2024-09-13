@@ -1,3 +1,6 @@
+/**
+ * AnalyserNodeから周波数データを取得する
+ */
 export const getUint8ArrayFromAnalyser = (analyser: AnalyserNode) => {
   // 周波数データを取得
   const bufferLength = analyser.frequencyBinCount;
@@ -11,6 +14,9 @@ export const getUint8ArrayFromAnalyser = (analyser: AnalyserNode) => {
   return dataArray;
 };
 
+/**
+ * オーディオファイルからAudioBufferを取得する
+ */
 export const getAudioBufferFromAudioFile = async ({
   file,
   audioCtx,
