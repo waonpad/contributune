@@ -6,13 +6,14 @@ export default defineWorkspace([
     extends: "vite.config.ts",
     test: {
       name: "browser",
-      include: ["src/**/*.browser.test.{js,ts,jsx,tsx}"],
+      include: ["src/**/*.browser.test.{ts,tsx}"],
       browser: {
         enabled: true,
         name: "chromium",
         provider: "playwright",
         // https://playwright.dev
         providerOptions: {},
+        headless: true,
       },
       globals: false,
       alias: {
@@ -24,7 +25,7 @@ export default defineWorkspace([
     extends: "vite.config.ts",
     test: {
       name: "node",
-      include: ["src/**/*.node.test.{js,ts,jsx,tsx}"],
+      include: ["src/**/*.node.test.{ts,tsx}"],
       environment: "happy-dom",
       setupFiles: ["./src/setup-tests.ts"],
       globals: false,

@@ -2,6 +2,7 @@ import { resolve } from "node:path";
 import { crx } from "@crxjs/vite-plugin";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import arraybuffer from "vite-plugin-arraybuffer";
 import manifest from "./manifest.config";
 
 export default defineConfig({
@@ -38,5 +39,6 @@ export default defineConfig({
       },
     }),
     crx({ manifest }),
+    arraybuffer(),
   ],
 });

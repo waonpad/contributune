@@ -6,7 +6,7 @@
   "scripts": {
     "prepare": "lefthook install",
     "dev": "run-s clean && vite",
-    "build": "run-s clean && tsc && vite build",
+    "build": "run-s clean && tsc --project tsconfig.build.json && vite build",
     "clean": "run-p clean:*",
     "clean:dist": "rimraf dist",
     "fmt": "biome format --write .",
@@ -44,6 +44,7 @@
     "rimraf": "^5.0.5",
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
+    "vite-plugin-arraybuffer": "^0.0.8",
     "vitest": "^2.1.0"
   }
 }
