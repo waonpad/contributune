@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { createRoundRectPath } from "./canvas";
 
 import { render } from "@testing-library/react";
@@ -9,7 +9,7 @@ describe(createRoundRectPath, () => {
     return <canvas data-testid="canvas" width={100} height={100} />;
   };
 
-  it("角丸四角形のパスを作成する", async () => {
+  test("角丸四角形のパスを作成する", async () => {
     const { baseElement } = render(<Canvas />);
 
     const canvas = baseElement.querySelector("canvas[data-testid='canvas']") as HTMLCanvasElement;
@@ -31,7 +31,7 @@ describe(createRoundRectPath, () => {
     );
   });
 
-  it("fillが呼ばれていない", async () => {
+  test("fillが呼ばれていない", async () => {
     const { baseElement } = render(<Canvas />);
 
     const canvas = baseElement.querySelector("canvas[data-testid='canvas']") as HTMLCanvasElement;
@@ -47,7 +47,7 @@ describe(createRoundRectPath, () => {
     expect(mockFill).not.toHaveBeenCalled();
   });
 
-  it("strokeが呼ばれていない", async () => {
+  test("strokeが呼ばれていない", async () => {
     const { baseElement } = render(<Canvas />);
 
     const canvas = baseElement.querySelector("canvas[data-testid='canvas']") as HTMLCanvasElement;

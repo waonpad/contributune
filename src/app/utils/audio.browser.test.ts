@@ -1,10 +1,10 @@
 import audioArrayBuffer from "@/test/fixtures/files/audio.mp3?arraybuffer";
 import textArrayBuffer from "@/test/fixtures/files/text.txt?arraybuffer";
-import { describe, expect, it } from "vitest";
+import { describe, expect, test } from "vitest";
 import { getAudioBufferFromAudioFile, getUint8ArrayFromAnalyser } from "./audio";
 
 describe(getUint8ArrayFromAnalyser, () => {
-  it("Uint8Arrayを返す", () => {
+  test("Uint8Arrayを返す", () => {
     const audioCtx = new AudioContext();
     const analyser = audioCtx.createAnalyser();
 
@@ -13,7 +13,7 @@ describe(getUint8ArrayFromAnalyser, () => {
     expect(result).toBeInstanceOf(Uint8Array);
   });
 
-  it("Uint8Arrayの長さはAnalyserNode.frequencyBinCountと等しい", () => {
+  test("Uint8Arrayの長さはAnalyserNode.frequencyBinCountと等しい", () => {
     const audioCtx = new AudioContext();
     const analyser = audioCtx.createAnalyser();
 
@@ -22,7 +22,7 @@ describe(getUint8ArrayFromAnalyser, () => {
     expect(result.length).toBe(analyser.frequencyBinCount);
   });
 
-  it("Uint8Arrayの長さはAnalyserNode.fftSize / 2と等しい", () => {
+  test("Uint8Arrayの長さはAnalyserNode.fftSize / 2と等しい", () => {
     const audioCtx = new AudioContext();
     const analyser = audioCtx.createAnalyser();
     analyser.fftSize = 256;
@@ -34,7 +34,7 @@ describe(getUint8ArrayFromAnalyser, () => {
 });
 
 describe(getAudioBufferFromAudioFile, () => {
-  it("AudioBufferを返す", async () => {
+  test("AudioBufferを返す", async () => {
     const audioCtx = new AudioContext();
     const file = new File([audioArrayBuffer], "audio.mp3");
 
@@ -43,7 +43,7 @@ describe(getAudioBufferFromAudioFile, () => {
     expect(result).toBeInstanceOf(AudioBuffer);
   });
 
-  it("txtファイルを読み込むとエラーが発生する", async () => {
+  test("txtファイルを読み込むとエラーが発生する", async () => {
     const audioCtx = new AudioContext();
     const file = new File([textArrayBuffer], "text.txt");
 

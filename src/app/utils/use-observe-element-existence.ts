@@ -13,11 +13,11 @@ export const useObserveElementExistence = <T extends Element>({
   onDisappear,
 }: {
   /**
-   * 要素の出現を監視するためのパラメータ (オプションのsignalは無視される)
+   * 要素の出現を監視するためのパラメータ
    */
   appearParams: Parameters<typeof waitElement<T>>;
   /**
-   * 要素の消失を監視するためのパラメータ (オプションのsignalは無視される) \
+   * 要素の消失を監視するためのパラメータ \
    * 指定しない場合は、出現を監視するパラメータが使われる
    */
   disappearParams?: Parameters<typeof waitElement<T>>;
