@@ -1,5 +1,5 @@
-import audioArrayBuffer from "@/test/fixtures/files/audio.mp3?arraybuffer";
-import textArrayBuffer from "@/test/fixtures/files/text.txt?arraybuffer";
+import audioArrayBuffer from "@/testing/fixtures/files/audio.mp3?arraybuffer";
+import textArrayBuffer from "@/testing/fixtures/files/text.txt?arraybuffer";
 import { describe, expect, test } from "vitest";
 import { getAudioBufferFromAudioFile, getUint8ArrayFromAnalyser } from "./audio";
 
