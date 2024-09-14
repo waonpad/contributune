@@ -1,4 +1,4 @@
-import { useObserveElementExistence } from "@/app/utils/use-observe-element-existence";
+import { useObserveElementExistence } from "@/utils/use-observe-element-existence";
 import { AudioVisualizerRenderer } from "./components/audio-visualizer";
 import { OverrideStyles } from "./styles";
 

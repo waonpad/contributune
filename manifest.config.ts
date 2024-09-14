@@ -11,30 +11,30 @@ const manifest = defineManifest(async (_env) => ({
   description: "GitHubの草を音声波形にして音楽を再生するChrome拡張機能",
   version,
   // background: {
-  //   service_worker: "service-worker/index.ts",
+  //   service_worker: "src/app/service-worker/index.ts",
   // },
   content_scripts: [
     {
       matches: ["https://github.com/*"],
-      js: ["src/content/index.tsx"],
+      js: ["src/app/content/index.tsx"],
     },
   ],
   host_permissions: ["https://github.com/*"],
   // options_ui: {
-  //   page: "src/options/options.html",
+  //   page: "src/app/options/options.html",
   //   open_in_tab: true,
   // },
   // web_accessible_resources: [
   //   {
   //     resources: [
   //       // this file is web accessible; it supports HMR b/c it's declared in `rollupOptions.input`
-  //       "src/welcome/welcome.html",
+  //       "src/app/welcome/welcome.html",
   //     ],
   //     matches: ["<all_urls>"],
   //   },
   // ],
   // action: {
-  //   default_popup: "src/popup/popup.html",
+  //   default_popup: "src/app/popup/popup.html",
   //   default_icon: {
   //     "16": "images/extension-16.png",
   //     "32": "images/extension-32.png",

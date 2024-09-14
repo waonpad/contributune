@@ -1,5 +1,5 @@
-import { getContribGraphDataTableBody } from "@/app/utils/github/element-getters";
-import { useObserveElementExistence } from "@/app/utils/use-observe-element-existence";
+import { getContribGraphDataTableBody } from "@/utils/github/element-getters";
+import { useObserveElementExistence } from "@/utils/use-observe-element-existence";
 import { forwardRef } from "react";
 import { createPortal } from "react-dom";
 import { STYLE_DATA_ATTR_PREFIX as DS } from "../styles";

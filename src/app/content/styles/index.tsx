@@ -1,4 +1,4 @@
-import { DATA_ATTR_PREFIX } from "@/app/constants";
+import { DATA_ATTR_PREFIX } from "@/constants";
 import css from "styled-jsx/css";
 
 export const STYLE_DATA_ATTR_PREFIX = `${DATA_ATTR_PREFIX}-style` as const;

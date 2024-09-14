@@ -1,4 +1,4 @@
-import { createRoundRectPath } from "@/app/utils/canvas";
+import { createRoundRectPath } from "@/utils/canvas";
 import { VISUALIZER_SETTINGS as V } from "../constants";
 
 // TODO: 引数とか依存している設定をいい感じにする

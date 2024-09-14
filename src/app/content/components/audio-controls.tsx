@@ -1,5 +1,5 @@
-import { getContribGraphDataContainer } from "@/app/utils/github/element-getters";
-import { useObserveElementExistence } from "@/app/utils/use-observe-element-existence";
+import { getContribGraphDataContainer } from "@/utils/github/element-getters";
+import { useObserveElementExistence } from "@/utils/use-observe-element-existence";
 import { FileMusic, Pause, Play, X } from "lucide-react";
 import { type ChangeEvent, useRef } from "react";
 import { createPortal } from "react-dom";
