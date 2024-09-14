@@ -1,5 +1,5 @@
 import { createRoundRectPath } from "@/utils/canvas";
-import { VISUALIZER_SETTINGS as V } from "../constants";
+import { VISUALIZER_SETTINGS as V } from "../config";
 
 // TODO: 引数とか依存している設定をいい感じにする
 export const fillCanvasLikeContribGraphBg = ({

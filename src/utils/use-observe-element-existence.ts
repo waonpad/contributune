@@ -1,7 +1,6 @@
 import { waitElement } from "@1natsu/wait-element";
 import { isNotExist } from "@1natsu/wait-element/detectors";
-import { useEffect, useMemo } from "react";
-import { useRefWithNotify } from "./use-ref-with-notifiy";
+import { useEffect, useMemo, useReducer, useRef } from "react";
 
 /**
  * 要素の出現と消失を監視する単純なカスタムフック
@@ -30,7 +29,9 @@ export const useObserveElementExistence = <T extends Element>({
    */
   onDisappear?: () => void;
 }) => {
-  const [elementRef, notifyElementRefChange] = useRefWithNotify<T | null>(null);
+  const elementRef = useRef<T | null>(null);
+
+  const [, notifyElementRefChange] = useReducer((s) => s + 1, 0);
 
   /**
    * フックがアンマウントされたときに監視を中止するためのAbortController

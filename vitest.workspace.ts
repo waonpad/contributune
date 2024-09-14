@@ -34,7 +34,7 @@ export default defineWorkspace([
       name: "node",
       include: ["src/**/*.node.test.{ts,tsx}"],
       environment: "happy-dom",
-      setupFiles: ["./src/test/setup-tests.ts"],
+      setupFiles: ["./src/tests/setup-tests.ts"],
     },
   },
 ]);

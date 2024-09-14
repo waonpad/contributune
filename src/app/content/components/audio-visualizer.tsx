@@ -3,9 +3,9 @@ import { getContribContainer } from "@/utils/github/element-getters";
 import { useObserveElementExistence } from "@/utils/use-observe-element-existence";
 import { type ChangeEvent, useReducer } from "react";
 import { createPortal } from "react-dom";
-import { VISUALIZER_SETTINGS } from "../constants";
-import { useAudio } from "../hooks/use-audio";
-import { useVisualizer } from "../hooks/use-visualizer";
+import { VISUALIZER_SETTINGS } from "../config";
+import { useAudio } from "../logics/use-audio";
+import { useVisualizer } from "../logics/use-visualizer";
 import { AudioControlsRenderer } from "./audio-controls";
 import { VisualizerRenderer } from "./visualizer";
 

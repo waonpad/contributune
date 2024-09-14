@@ -8,7 +8,7 @@ import {
   applyOverrideStyle,
   removeOverrideStyleFromAllElements,
 } from "../styles";
-import { fillCanvasLikeContribGraphAsVisualizer, fillCanvasLikeContribGraphBg } from "../utils/canvas";
+import { fillCanvasLikeContribGraphAsVisualizer, fillCanvasLikeContribGraphBg } from "./canvas";
 
 export const useVisualizer = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);

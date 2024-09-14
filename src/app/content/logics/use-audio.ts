@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ANALYSER_SETTINGS } from "../constants";
+import { ANALYSER_SETTINGS } from "../config";
 
 export const useAudio = () => {
   const audioCtx = useRef<AudioContext | null>(null);
