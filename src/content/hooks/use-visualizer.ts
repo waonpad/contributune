@@ -53,19 +53,23 @@ export const useVisualizer = () => {
     // キャンバスを初期化
     canvasCtx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
+    // 背景塗りつぶし用の色を取得
+    canvasCtx.fillStyle = getComputedStyle(colorLevel0Ref.current).backgroundColor;
+
     // キャンバスの背景を塗りつぶす
     fillCanvasLikeContribGraphBg({
       canvas: canvasRef.current,
       canvasCtx,
-      fillStyle: getComputedStyle(colorLevel0Ref.current).backgroundColor,
     });
+
+    // 周波数データの描画用の色を取得
+    canvasCtx.fillStyle = getComputedStyle(colorLevel4Ref.current).backgroundColor;
 
     // キャンバスに周波数データを描画
     fillCanvasLikeContribGraphAsVisualizer({
       canvas: canvasRef.current,
       canvasCtx,
       dataArray,
-      fillStyle: getComputedStyle(colorLevel4Ref.current).backgroundColor,
     });
   };
 

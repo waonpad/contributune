@@ -1,17 +1,14 @@
 import { createRoundRectPath } from "@/app/utils/canvas";
 import { VISUALIZER_SETTINGS as V } from "../constants";
 
+// TODO: 引数とか依存している設定をいい感じにする
 export const fillCanvasLikeContribGraphBg = ({
   canvas,
   canvasCtx,
-  fillStyle,
 }: {
   canvas: HTMLCanvasElement;
   canvasCtx: CanvasRenderingContext2D;
-  fillStyle: CanvasRenderingContext2D["fillStyle"];
 }) => {
-  canvasCtx.fillStyle = fillStyle;
-
   // キャンバス全体に10x10の角丸四角形を3pxずつスペースをあけて描画
   for (let y = 0; y < canvas.height; y += V.CELL_HEIGHT + V.CELL_SPACING) {
     for (let x = 0; x < canvas.width; x += V.CELL_WIDTH + V.CELL_SPACING) {
@@ -29,19 +26,16 @@ export const fillCanvasLikeContribGraphBg = ({
   }
 };
 
+// TODO: 引数とか依存している設定をいい感じにする
 export const fillCanvasLikeContribGraphAsVisualizer = ({
   canvas,
   canvasCtx,
   dataArray,
-  fillStyle,
 }: {
   canvas: HTMLCanvasElement;
   canvasCtx: CanvasRenderingContext2D;
   dataArray: Uint8Array;
-  fillStyle: CanvasRenderingContext2D["fillStyle"];
 }) => {
-  canvasCtx.fillStyle = fillStyle;
-
   for (let i = 0; i < dataArray.length; i++) {
     // バーの高さはキャンバスの高さに合わせる
     // これは0〜255の値を0〜キャンバスの高さに変換している
