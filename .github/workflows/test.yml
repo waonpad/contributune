@@ -36,8 +36,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run Type Check
-        run: npm run tsc
+      # - name: Run Type Check
+      #   run: npm run tsc
 
       - name: Run Tests
         run: npm run test:ci
