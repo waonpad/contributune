@@ -21,9 +21,14 @@ describe(createRoundRectPath, () => {
     // 描画
     canvasCtx.fill();
 
-    const canvasLocator = page.getByTestId("canvas");
+    // const canvasLocator = page.getByTestId("canvas");
 
-    const { base64 } = await canvasLocator.screenshot({ base64: true });
+    // const { base64 } = await canvasLocator.screenshot({ base64: true });
+
+    const { base64 } = await page.screenshot({
+      element: canvas,
+      base64: true,
+    });
 
     // スクショをbase64でインラインに保存しておく
     expect(base64).toMatchInlineSnapshot(
