@@ -36,17 +36,17 @@ const manifest = defineManifest(async (_env) => ({
   // action: {
   //   default_popup: "src/app/popup/popup.html",
   //   default_icon: {
-  //     "16": "images/extension-16.png",
-  //     "32": "images/extension-32.png",
-  //     "48": "images/extension-48.png",
-  //     "128": "images/extension-128.png",
+  //     "16": "images/16.png",
+  //     "32": "images/32.png",
+  //     "48": "images/48.png",
+  //     "128": "images/128.png",
   //   },
   // },
   icons: {
-    "16": "images/extension-16.png",
-    "32": "images/extension-32.png",
-    "48": "images/extension-48.png",
-    "128": "images/extension-128.png",
+    "16": "images/16.png",
+    "32": "images/32.png",
+    "48": "images/48.png",
+    "128": "images/128.png",
   },
   permissions: [
     // "storage",
