@@ -25,6 +25,7 @@ export default defineWorkspace([
         providerOptions: {},
         headless: true,
       },
+      setupFiles: ["./src/testing/setup.browser.ts"],
     },
   },
   {
@@ -34,7 +35,7 @@ export default defineWorkspace([
       name: "node",
       include: ["src/**/*.node.test.{ts,tsx}"],
       environment: "happy-dom",
-      setupFiles: ["./src/tests/setup-tests.ts"],
+      setupFiles: ["./src/testing/setup.node.ts"],
     },
   },
 ]);

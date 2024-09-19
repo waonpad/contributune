@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "prepare": "lefthook install && npx playwright install",
+    "prepare": "lefthook install && npx playwright install chromium",
     "dev": "run-s clean && vite",
     "build": "run-s clean && tsc --project tsconfig.build.json && vite build",
     "clean": "run-p clean:*",

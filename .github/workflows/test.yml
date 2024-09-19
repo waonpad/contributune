@@ -4,9 +4,9 @@ on: pull_request
 
 jobs:
   test:
-    strategy:
-      matrix:
-        node-version: ["22.7.0"]
+    # strategy:
+    #   matrix:
+    #     node-version: ["22.7.0"]
 
     runs-on: ubuntu-latest
     steps:

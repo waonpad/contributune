@@ -14,14 +14,12 @@ describe(useObserveElementExistence, () => {
       return <div data-testid="ref-state">{elementRef.current === null ? "null" : "not null"}</div>;
     };
 
-    const { unmount } = render(<Component />);
+    render(<Component />);
 
     // 一瞬だけ待つ
     await new Promise((resolve) => requestAnimationFrame(resolve));
 
     expect(document.querySelector("[data-testid='ref-state']")?.textContent).toBe("null");
-
-    unmount();
   });
 
   test("要素が出現したらrefに要素がセットされる", async () => {
@@ -42,14 +40,12 @@ describe(useObserveElementExistence, () => {
       );
     };
 
-    const { unmount } = render(<Component />);
+    render(<Component />);
 
     // 一瞬だけ待つ
     await new Promise((resolve) => requestAnimationFrame(resolve));
 
     expect(document.querySelector("[data-testid='ref-state']")?.textContent).toBe("target");
-
-    unmount();
   });
 
   test("要素が出現したときにonAppearが呼ばれる", async () => {
@@ -64,15 +60,12 @@ describe(useObserveElementExistence, () => {
       return <div data-testid="target" />;
     };
 
-    const { unmount } = render(<Component />);
+    render(<Component />);
 
     // 一瞬だけ待つ
     await new Promise((resolve) => requestAnimationFrame(resolve));
 
     expect(mockOnAppear).toHaveBeenCalled();
-
-    // アンマウントしないとなぜか別のテストにも要素が残ってしまう (なぜ？)
-    unmount();
   });
 
   test("要素が消失したときにonDisappearが呼ばれる", async () => {
@@ -96,14 +89,12 @@ describe(useObserveElementExistence, () => {
       return <div data-testid="target" />;
     };
 
-    const { unmount } = render(<Component />);
+    render(<Component />);
 
     // 要素の消失を待つ
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     expect(mockOnDisappear).toHaveBeenCalled();
-
-    unmount();
   });
 
   test("要素が消失しなければonDisappearは呼ばれない", async () => {
@@ -118,14 +109,12 @@ describe(useObserveElementExistence, () => {
       return <div data-testid="target" />;
     };
 
-    const { unmount } = render(<Component />);
+    render(<Component />);
 
     // 一瞬だけ待つ
     await new Promise((resolve) => requestAnimationFrame(resolve));
 
     expect(mockOnDisappear).not.toHaveBeenCalled();
-
-    unmount();
   });
 
   test("要素が消失した後再度出現した場合2回目のonAppearが呼ばれる", async () => {
@@ -152,14 +141,12 @@ describe(useObserveElementExistence, () => {
       return <div data-testid="target" />;
     };
 
-    const { unmount } = render(<Component />);
+    render(<Component />);
 
     // 要素の再出現を待つ
     await new Promise((resolve) => setTimeout(resolve, 150));
 
     expect(mockOnAppear).toHaveBeenCalledTimes(2);
-
-    unmount();
   });
 
   test("要素が2回出現した後消失した場合2回目のonDisappearが呼ばれる", async () => {
@@ -189,14 +176,12 @@ describe(useObserveElementExistence, () => {
       return <div data-testid="target" />;
     };
 
-    const { unmount } = render(<Component />);
+    render(<Component />);
 
     // 要素の再出現を待つ
     await new Promise((resolve) => setTimeout(resolve, 200));
 
     expect(mockOnDisappear).toHaveBeenCalledTimes(2);
-
-    unmount();
   });
 
   test("アンマウント時にAbortController.abortが呼ばれる", async () => {
@@ -228,10 +213,8 @@ describe(useObserveElementExistence, () => {
       return null;
     };
 
-    const { unmount } = render(<Component />);
+    render(<Component />);
 
     expect(spyAbort).not.toHaveBeenCalled();
-
-    unmount();
   });
 });
